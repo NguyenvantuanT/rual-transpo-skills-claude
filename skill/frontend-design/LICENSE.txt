@@ -1,0 +1,9 @@
+[PLACEHOLDER] — Paste the full license text from the upstream Anthropic
+`frontend-design` skill here before publishing or sharing this project.
+
+Source: Anthropic official skill (https://github.com/anthropics/skills)
+License: See upstream LICENSE.txt
+
+TODO: copy the exact license terms (Creative Commons BY-NC 4.0 in the
+official release) into this file and remove this block. Until then, the
+SKILL.md is not licensed for redistribution beyond your own use.
