@@ -1,0 +1,8 @@
+{
+  "name": "vtinter-harness",
+  "owner": { "name": "tuannv1" },
+  "metadata": { "description": "Harness Claude Code cho các dự án Flutter dùng chung bộ base MVVM + Provider" },
+  "plugins": [
+    { "name": "vtinter-harness", "source": "./", "description": "Agent + skills + hooks cho bộ base Flutter MVVM + Provider" }
+  ]
+}
