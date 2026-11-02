@@ -21,7 +21,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           HARNESS_DIFF: origin/${{ github.base_ref }}
-        run: bash .harness/scripts/check.sh $(git diff --name-only "origin/${{ github.base_ref }}" -- lib pubspec.yaml)
+        run: bash .harness/scripts/check.sh $(git diff --name-only "origin/${{ github.base_ref }}" -- lib supabase pubspec.yaml)
       - name: Docs drift
         run: bash .harness/scripts/docs-check.sh
 

@@ -18,12 +18,21 @@ Bạn làm việc trong một harness: **convention** nằm ở skill, **fact d�
 | Việc lớn đang dở | `docs/exec-plans/active/` |
 | Rule bị tắt / cờ multi-app | `.claude/harness.env` |
 | Kiến trúc, VM/Page, DI, router, EventBus | skill `flutter-mvvm-provider-architecture` |
-| Dio/ApiClient, model, SharedPrefs, debounce | skill `flutter-networking-and-data` |
+| Dio/ApiClient, model (kiểu theo `HARNESS_MODEL_STYLE`), SharedPrefs, debounce | skill `flutter-networking-and-data` |
+| Backend Supabase: query, RPC, realtime, optimistic update | skill `flutter-supabase-queries` |
+| Sửa `supabase/` (SQL, RLS, view, trigger, edge function) | skill `supabase-security-review` |
 | Widget, màu, typography, list, button, form | skill `flutter-ui-style-guide` |
 | String, ARB, locale | skill `flutter-internationalization` |
 | Flavor, entry point, multi-app | skill `flutter-multi-app-flavor` |
 | Native config, signing, release | skill `flutter-deployment-guide` |
 | Chạy app, chụp màn hình, đọc log, integration test | skill `flutter-run-and-verify` |
+| Viết test unit VM / widget Page | skill `flutter-testing` |
+| Crash reporting, handler lỗi toàn app, màn lỗi | skill `flutter-error-handling` |
+| UI giật, rebuild thừa, scroll lag | skill `flutter-performance` |
+| Push notification, deep link | skill `flutter-push-and-deep-link` |
+| Giờ, múi giờ, lịch, giá, tiền | skill `datetime-and-money` |
+| Sửa dữ liệu lúc offline rồi đồng bộ | skill `offline-sync` |
+| Review diff do agent viết trước PR / merge | skill `ai-code-review` |
 | Reskin UI có chủ đích | skill `frontend-design` |
 
 Load skill bằng tool `Skill` trước khi code phần thuộc domain đó. Ví dụ trong skill chỉ minh hoạ shape — grep code thật trước khi dùng tên class/file.
@@ -37,7 +46,7 @@ Load skill bằng tool `Skill` trước khi code phần thuộc domain đó. Ví
 3. **Code**: khớp code xung quanh, không nghĩ pattern mới.
 4. **Phản hồi từ harness**: hook tự chạy `check.sh` sau mỗi Edit/Write và `check.sh` + `docs-check.sh` + `flutter analyze` trước khi bạn dừng — chỉ trên dòng bạn vừa thêm/sửa. Báo lỗi → sửa theo message. Vi phạm cũ ngoài phạm vi task → không sửa (việc của `harness-gardening`). Ngoại lệ hợp lệ → không lách rule, nêu trong report để user quyết.
 5. **Regenerate**: chạm `app_router.dart`/`@RoutePage`/asset → `fvm flutter pub run build_runner build --delete-conflicting-outputs`; chạm ARB → `fvm flutter pub run intl_utils:generate`.
-6. **Kiểm chứng thật**: thay đổi UI/flow → skill `flutter-run-and-verify` (ảnh trước/sau). Multi-app + đụng code dùng chung → kiểm mọi app bị ảnh hưởng.
+6. **Kiểm chứng thật**: logic mới không tầm thường (VM, model, util) → test theo `flutter-testing`; thay đổi UI/flow → skill `flutter-run-and-verify` (ảnh trước/sau). Multi-app + đụng code dùng chung → kiểm mọi app bị ảnh hưởng.
 7. **Ghi lại**: phát hiện nợ kỹ thuật / doc sai → cập nhật `docs/tech-debt-tracker.md` hoặc sửa doc theo code. Lỗi bạn mắc mà rule chưa bắt được → đề xuất rule mới trong report.
 8. **Report**: file đã đổi, quyết định, kết quả kiểm chứng, việc còn mở.
 

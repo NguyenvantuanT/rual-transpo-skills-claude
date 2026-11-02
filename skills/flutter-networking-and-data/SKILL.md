@@ -1,13 +1,13 @@
 ---
 name: flutter-networking-and-data
-description: Data layer bộ base Flutter — REST qua Dio (ApiClient + ApiInterceptor), model hand-written all-nullable, enum discriminator fromString, SharedPrefs (secure storage token/user), EasyDebounce, pagination. Dùng khi thêm API call, service, model, đọc/ghi local storage, debounce search.
+description: Data layer bộ base Flutter — REST qua Dio (ApiClient + ApiInterceptor), model (viết tay hoặc json_serializable theo HARNESS_MODEL_STYLE), enum discriminator, SharedPrefs, EasyDebounce, pagination. Dùng khi thêm API call, service, model, đọc/ghi local storage, debounce search.
 ---
 
 # Flutter Networking & Data
 
-Đọc file này trước; mở `references/` khi cần code mẫu. Endpoint/service thật của dự án → grep `lib/src/services/`.
+Đọc file này trước; mở `references/` khi cần code mẫu. Endpoint/service thật của dự án → grep `lib/src/services/`. Backend Supabase → thêm skill `flutter-supabase-queries` (thay phần REST; Model / storage / debounce bên dưới vẫn áp dụng).
 
-## REST
+## REST (Dio)
 
 - Một `Dio` duy nhất trong `ApiClient` (`lib/src/services/remote/api_client.dart`), VM dùng `api.dio` (inherited). Không `Dio()` mới (`check.sh` rule `raw_dio`).
 - **`dio.options.baseUrl` không được set** → tự nối `'${AppConstants.baseURL}<path>'`; `api.dio.get('/x')` suông sẽ thiếu host.
@@ -17,6 +17,21 @@ description: Data layer bộ base Flutter — REST qua Dio (ApiClient + ApiInter
 - Lỗi: GET danh sách → `debugPrint`; POST/PUT/DELETE + auth → `showError(...)`.
 
 ## Model
+
+Kiểu model là lựa chọn **của dự án**, khai ở `.claude/harness.env` → `HARNESS_MODEL_STYLE` (mặc định `manual`). `check.sh` ép đúng kiểu đã chọn (`model_codegen` / `model_handwritten`). Không trộn 2 kiểu trong 1 repo.
+
+| | `manual` | `generated` |
+|---|---|---|
+| Parse | viết tay `fromJson` + cascade | `@JsonSerializable` + `part '<file>.g.dart'` + `_$XFromJson` |
+| Enum | `static fromString()` | `@JsonValue('...')` |
+| Ngày/số | `DateTime.tryParse`, cast `as T?` | converter dùng chung trong `@JsonKey(fromJson:, toJson:)` |
+| Sau khi sửa | — | `fvm flutter pub run build_runner build --delete-conflicting-outputs`, commit `.g.dart` (hook Stop báo nếu quên) |
+
+Chung cho cả 2: mọi field nullable; VM/widget đọc **field typed**, không bao giờ `map['key']` ngoài tầng parse; nested là model / `List<XModel>`, không `Map`/`dynamic`.
+
+**`generated`** → đọc `references/models-generated.md` trước khi tạo/sửa model.
+
+**`manual`**:
 
 ```dart
 class OrderModel {
@@ -36,7 +51,6 @@ class OrderModel {
 ```
 
 - Mọi field nullable, không `final`, không `required`; constructor no-arg không `const`; `fromJson` factory + cascade; cast `as T?` (không `as T`).
-- Hand-written — không `freezed` / `json_serializable` dù có trong `dev_dependencies`.
 - Field string cố định (type/status/kind/role) → enum ở `lib/src/models/enums/` có `static fromString()` (switch + `_` default); label hiển thị qua extension `S.current`-backed cạnh enum.
 - Key JSON khớp đúng field — đọc lại từng dòng cascade (bug copy-paste `id = json['email']` đã từng gặp).
 
@@ -58,4 +72,5 @@ Chưa có convention chung — `grep -r loadMore lib/src/pages` trước: có ti
 |---|---|
 | `references/api-client.md` | Code `ApiClient` + ví dụ service abstract/impl đầy đủ + thứ tự xử lý lỗi trong `ApiInterceptor` |
 | `references/storage-and-debounce.md` | Bảng cơ chế lưu từng loại dữ liệu, migration 1 lần trong `initialise()`, API `EasyDebounce` đầy đủ |
-| `references/models.md` | Ví dụ model dài, enum + label extension, gợi ý pagination chi tiết |
+| `references/models.md` | (`manual`) Ví dụ model dài, enum + label extension, gợi ý pagination chi tiết |
+| `references/models-generated.md` | (`generated`) Shape `@JsonSerializable` chuẩn, converter, `@JsonValue`, nested, regenerate |

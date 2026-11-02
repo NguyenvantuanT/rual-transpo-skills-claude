@@ -15,6 +15,7 @@ Dự án Flutter dựng trên bộ base MVVM + Provider, dùng plugin `vtinter-h
 
 - **Package**: `<package_name>` — <1 dòng mô tả>
 - **Apps**: <1 app | multi-app: `<app1>`, `<app2>` — cờ `<appFlag>`>
+- **Backend**: <REST/Dio | Supabase> · **Model**: <manual | generated> (khớp `HARNESS_MODEL_STYLE`)
 - **Locale**: main `<xx>`, phụ `<yy>`
 - **Flutter**: `<version>` qua FVM
 
