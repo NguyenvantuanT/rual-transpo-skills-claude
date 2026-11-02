@@ -3,12 +3,12 @@ grep -qE '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && exit 0
 root=$(printf '%s' "${CLAUDE_PROJECT_DIR:-$PWD}" | sed -E 's/\\+/\//g')
 cd "$root" || exit 0
 [ -f pubspec.yaml ] && git rev-parse --git-dir >/dev/null 2>&1 || exit 0
-status=$(git status --porcelain -uall -- lib pubspec.yaml '*.md')
+status=$(git status --porcelain -uall -- lib supabase pubspec.yaml '*.md')
 [ -n "$status" ] || exit 0
 
 stamp="$(git rev-parse --git-dir)/harness-verified"
-sig=$({ printf '%s\n' "$status"; git diff HEAD -- lib pubspec.yaml '*.md' 2>/dev/null
-        git ls-files -o --exclude-standard -- lib '*.md' | xargs -r git hash-object 2>/dev/null; } | git hash-object --stdin)
+sig=$({ printf '%s\n' "$status"; git diff HEAD -- lib supabase pubspec.yaml '*.md' 2>/dev/null
+        git ls-files -o --exclude-standard -- lib supabase '*.md' | xargs -r git hash-object 2>/dev/null; } | git hash-object --stdin)
 [ "$(cat "$stamp" 2>/dev/null)" = "$sig" ] && exit 0
 
 changed=$(printf '%s\n' "$status" | cut -c4- | sed 's/.* -> //')
@@ -23,7 +23,12 @@ for arb in $(printf '%s\n' "$changed" | grep -E 'intl_.*\.arb$'); do
   newer "$arb" "$l10n" && { msgs+="- l10n generated cũ hơn ARB → chạy intl_utils:generate"$'\n'; break; }
 done
 
-code_files=$(printf '%s\n' "$changed" | grep -E '\.(dart|arb|yaml)$')
+for m in $(printf '%s\n' "$changed" | grep -E '^lib/src/models/.*\.dart$' | grep -vE '\.g\.dart$'); do
+  g="${m%.dart}.g.dart"
+  grep -q "part '.*\.g\.dart'" "$m" 2>/dev/null && { [ ! -f "$g" ] || newer "$m" "$g"; } && { msgs+="- $g thiếu/cũ hơn model → chạy build_runner"$'\n'; break; }
+done
+
+code_files=$(printf '%s\n' "$changed" | grep -E '\.(dart|arb|yaml|sql|ts|js)$')
 [ -n "$code_files" ] && { rules=$(HARNESS_DIFF=HEAD bash "$here/check.sh" $code_files) || msgs+="$rules"$'\n'; }
 
 if printf '%s\n' "$status" | grep -qE '^( ?D|D |R ) *lib/|^R.* lib/'; then

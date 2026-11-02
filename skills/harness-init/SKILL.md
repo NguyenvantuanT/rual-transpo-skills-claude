@@ -11,12 +11,12 @@ Template ở `templates/` của plugin (base directory của skill này → `../
 
 ## Bước
 
-1. **Khảo sát repo app** (không đoán): `pubspec.yaml` (package, `flutter_intl`, deps), `.fvmrc`, `lib/app/main_*.dart`, `lib/router/app_router.dart`, `lib/src/utils/locator.dart`, `lib/src/base/base_vm.dart`, cây `lib/src/pages/`, `test/`. Ghi lại: 1 app hay multi-app (cờ app), locale, service inherited thật, domain chính.
+1. **Khảo sát repo app** (không đoán): `pubspec.yaml` (package, `flutter_intl`, deps), `.fvmrc`, `lib/app/main_*.dart`, `lib/router/app_router.dart`, `lib/src/utils/locator.dart`, `lib/src/base/base_vm.dart`, cây `lib/src/pages/`, `test/`. Ghi lại: 1 app hay multi-app (cờ app), locale, service inherited thật, domain chính, backend (`supabase_flutter` trong pubspec → Supabase; có `supabase/` thì có cả SQL/edge function), kiểu model (`grep -rl "@JsonSerializable" lib/src/models` có kết quả → `generated`, không → `manual`; lẫn cả hai → hỏi user chọn 1, ghi phần còn lại vào tech-debt).
 2. **Copy template** — không ghi đè file đã có; file đã tồn tại thì merge ở bước 3:
    - `templates/CLAUDE.md` → `CLAUDE.md`
    - `templates/ARCHITECTURE.md` → `ARCHITECTURE.md`
    - `templates/docs/` → `docs/` (gồm `.gitkeep`)
-   - `templates/harness.env` → `.claude/harness.env` (điền `HARNESS_APP_FLAG` nếu multi-app)
+   - `templates/harness.env` → `.claude/harness.env` (điền `HARNESS_MODEL_STYLE`; `HARNESS_APP_FLAG` nếu multi-app)
    - `templates/ci/harness.yml` → `.github/workflows/harness.yml` (sửa `HARNESS_REPO` thành git URL của plugin)
 3. **Nếu repo đã có CLAUDE.md dài**: phân loại từng đoạn —
    - convention chung đã có trong skill `flutter-*` → **xoá** (không chép trùng);

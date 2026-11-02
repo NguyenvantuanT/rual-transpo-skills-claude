@@ -10,6 +10,15 @@ Theo tinh thần [harness engineering](https://openai.com/index/harness-engineer
 |---|---|
 | `agents/flutter-mobile-dev.md` | Bản đồ + quy trình cho subagent code Flutter |
 | `skills/flutter-*` | Convention chung của bộ base, nạp theo nhu cầu |
+| `skills/flutter-supabase-queries` | Backend Supabase: query theo domain, select tường minh + range, RPC, optimistic update, realtime |
+| `skills/supabase-security-review` | Review SQL/RLS/view/trigger/edge function. Rule máy `sb_*` có trong `check.sh` |
+| `skills/flutter-testing` | Test unit VM / widget Page theo bộ base, mock qua `get_it` |
+| `skills/flutter-error-handling` | Bốn kênh lỗi, phân loại lỗi, crash reporting + symbolication |
+| `skills/flutter-performance` | Rebuild của Provider/MixinBasePage, repaint, list, isolate |
+| `skills/flutter-push-and-deep-link` | FCM, local notification, app_links, pending intent qua `appRouter` |
+| `skills/datetime-and-money` | UTC/IANA/DST, tiền là số nguyên + mã tiền tệ |
+| `skills/offline-sync` | HLC, chiến lược theo field, tombstone, outbox, test hội tụ |
+| `skills/ai-code-review` | Review diff do agent viết: API bịa, logic, bảo mật, độ phức tạp |
 | `skills/flutter-run-and-verify` | Agent tự chạy app, chụp màn hình, đọc log, viết integration test |
 | `skills/harness-init` | Dựng harness vào repo app: CLAUDE.md mục lục, `docs/`, `harness.env`, CI |
 | `skills/harness-gardening` | Dọn rác định kỳ: quét vi phạm, sửa doc lệch, cập nhật tech debt và quality score |
