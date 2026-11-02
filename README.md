@@ -19,6 +19,7 @@ Theo tinh thần [harness engineering](https://openai.com/index/harness-engineer
 | `skills/datetime-and-money` | UTC/IANA/DST, tiền là số nguyên + mã tiền tệ |
 | `skills/offline-sync` | HLC, chiến lược theo field, tombstone, outbox, test hội tụ |
 | `skills/ai-code-review` | Review diff do agent viết: API bịa, logic, bảo mật, độ phức tạp |
+| `skills/ui-ux-pro-max` | Thiết kế UI/UX: style, bảng màu, font, UX guideline, gợi ý theo stack (có Flutter). Lấy từ [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT |
 | `skills/flutter-run-and-verify` | Agent tự chạy app, chụp màn hình, đọc log, viết integration test |
 | `skills/harness-init` | Dựng harness vào repo app: CLAUDE.md mục lục, `docs/`, `harness.env`, CI |
 | `skills/harness-gardening` | Dọn rác định kỳ: quét vi phạm, sửa doc lệch, cập nhật tech debt và quality score |
