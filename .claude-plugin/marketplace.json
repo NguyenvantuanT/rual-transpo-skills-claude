@@ -1,12 +1,46 @@
 {
   "name": "vtinter-harness",
-  "owner": { "name": "tuannv1" },
-  "metadata": { "description": "Harness Claude Code: engine luật + hooks dùng chung mọi stack, tri thức chọn theo stack" },
+  "owner": {
+    "name": "tuannv1"
+  },
+  "metadata": {
+    "description": "Harness Claude Code: engine luật + hooks dùng chung mọi stack, tri thức chọn theo stack"
+  },
   "plugins": [
-    { "name": "harness", "source": "./plugins/harness", "description": "Cơ chế: engine check.sh + pack theo stack (flutter, supabase, web_ts — tự bật theo file đánh dấu), hooks, agent reviewer/evaluator, scaffold AGENTS.md + docs, harness-init, harness-gardening. Cài cho mọi repo app" },
-    { "name": "core", "source": "./plugins/core", "description": "Tri thức không phụ thuộc stack: UI/UX, frontend design, review code AI, giờ + tiền, offline sync" },
-    { "name": "flutter", "source": "./plugins/flutter", "description": "Tri thức bộ base Flutter MVVM + Provider: skill flutter-*, agent flutter-mobile-dev" },
-    { "name": "supabase", "source": "./plugins/supabase", "description": "Review bảo mật Supabase (SQL, RLS, view, trigger, edge function), dùng cho app Flutter hay web" },
-    { "name": "flutter-supabase", "source": "./plugins/flutter-supabase", "description": "Phần ghép Flutter + Supabase: query class theo domain, select tường minh, RPC, realtime" }
+    {
+      "name": "harness",
+      "source": "./plugins/harness",
+      "description": "Cơ chế: engine check.sh + pack theo stack (flutter, supabase, web_ts, nextjs, nestjs, python, go, godot, unity — tự bật theo file đánh dấu, hỗ trợ monorepo), hooks, agent reviewer/evaluator, scaffold AGENTS.md + docs, harness-init, harness-gardening. Cài cho mọi repo app"
+    },
+    {
+      "name": "core",
+      "source": "./plugins/core",
+      "description": "Tri thức không phụ thuộc stack: UI/UX, frontend design, review code AI, giờ + tiền, offline sync, hợp đồng API, thiết kế DB, observability, debug có hệ thống, git workflow"
+    },
+    {
+      "name": "web",
+      "source": "./plugins/web",
+      "description": "Tri thức web Next.js (App Router) + React + TypeScript: skill nextjs-app-router, web-data-fetching, react-ui-components, web-auth-security, web-testing, web-performance, web-i18n, web-run-and-verify, agent nextjs-web-dev"
+    },
+    {
+      "name": "nestjs",
+      "source": "./plugins/nestjs",
+      "description": "Tri thức BE NestJS + Prisma: skill nestjs-architecture, nestjs-api-design, nestjs-prisma, nestjs-auth-security, nestjs-jobs-queues, nestjs-observability, nestjs-testing, nestjs-run-and-verify, agent nestjs-backend-dev"
+    },
+    {
+      "name": "flutter",
+      "source": "./plugins/flutter",
+      "description": "Tri thức bộ base Flutter MVVM + Provider: skill flutter-*, agent flutter-mobile-dev"
+    },
+    {
+      "name": "supabase",
+      "source": "./plugins/supabase",
+      "description": "Review bảo mật Supabase (SQL, RLS, view, trigger, edge function), dùng cho app Flutter hay web"
+    },
+    {
+      "name": "flutter-supabase",
+      "source": "./plugins/flutter-supabase",
+      "description": "Phần ghép Flutter + Supabase: query class theo domain, select tường minh, RPC, realtime"
+    }
   ]
 }

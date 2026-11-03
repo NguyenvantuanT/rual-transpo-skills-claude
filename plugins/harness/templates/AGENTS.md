@@ -41,6 +41,11 @@ Fact riêng của dự án nằm trong repo này; convention chung của stack n
 | Thiết kế UI/UX, bảng màu, font | `ui-ux-pro-max` · reskin có chủ đích: `frontend-design` |
 | Giờ, múi giờ, lịch, giá, tiền | `datetime-and-money` |
 | Sửa dữ liệu lúc offline rồi đồng bộ | `offline-sync` |
+| Hợp đồng API client ↔ server (lỗi, phân trang, version) | `api-contract` |
+| Thiết kế bảng, index, migration | `database-design` |
+| Log, metric, alert, health check | `observability` |
+| Bug khó, test fail khó hiểu, lỗi production | `systematic-debugging` |
+| Branch, commit, PR, conflict | `git-workflow` |
 | Review diff do agent viết | `ai-code-review` (subagent `reviewer`) |
 
 ## Stack

@@ -11,8 +11,8 @@ Repo chia làm hai lớp:
 
 | Plugin | Khi nào cài | Nội dung |
 |---|---|---|
-| `harness` | Mọi repo app | `engine/` (check.sh, docs-check.sh, scaffold.sh), `packs/` (flutter, supabase, web_ts), `hooks/`, agent `reviewer` + `evaluator`, skill `harness-init` + `harness-gardening`, `templates/` (AGENTS.md, CLAUDE.md, docs/, CI) |
-| `core` | Mọi dự án | `ui-ux-pro-max` (từ [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT), `frontend-design`, `ai-code-review`, `datetime-and-money`, `offline-sync` |
+| `harness` | Mọi repo app | `engine/` (check.sh, docs-check.sh, scaffold.sh), `packs/` (flutter, supabase, web_ts, nextjs, nestjs, python, go, godot, unity), `hooks/`, agent `reviewer` + `evaluator`, skill `harness-init` + `harness-gardening`, `templates/` (AGENTS.md, CLAUDE.md, docs/, CI) |
+| `core` | Mọi dự án | `ui-ux-pro-max` (từ [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT), `frontend-design`, `ai-code-review`, `datetime-and-money`, `offline-sync`, `api-contract`, `database-design`, `observability`, `systematic-debugging`, `git-workflow` |
 | `web` | Web Next.js (App Router) + React | Skill Next.js/React: kiến trúc route, data fetching, UI component, auth/bảo mật, test, hiệu năng, i18n, run-and-verify; agent `nextjs-web-dev` |
 | `nestjs` | BE NestJS + Prisma | Skill NestJS: kiến trúc module, API design, Prisma, auth/bảo mật, queue/cron, observability, test, run-and-verify; agent `nestjs-backend-dev` |
 | `flutter` | App Flutter bộ base MVVM + Provider | Skill `flutter-*` (kiến trúc, UI, data, i18n, test, lỗi, hiệu năng, push/deep link, flavor, deploy, run-and-verify), agent `flutter-mobile-dev` |

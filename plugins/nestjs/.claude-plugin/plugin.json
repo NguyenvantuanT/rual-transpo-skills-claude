@@ -1,0 +1,6 @@
+{
+  "name": "nestjs",
+  "version": "1.0.0",
+  "description": "Tri thức BE Node NestJS + Prisma: skill kiến trúc module, API design, Prisma, auth/bảo mật, queue/cron, observability, test, run-and-verify + agent nestjs-backend-dev. Rule máy nằm trong pack nestjs/web_ts của plugin harness",
+  "author": { "name": "tuannv1" }
+}
