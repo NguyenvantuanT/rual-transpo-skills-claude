@@ -37,3 +37,12 @@ jobs:
       - run: flutter analyze
       - name: Test
         run: if [ -d test ]; then flutter test; fi
+
+      # --- pack web_ts (xoá nếu không dùng TypeScript) ---
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx eslint .
+      - run: npm test --if-present

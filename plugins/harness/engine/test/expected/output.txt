@@ -24,6 +24,14 @@ lib/src/pages/home/home_page.dart:
 pubspec.yaml:
 - [caret_version] Dependency phải pin EXACT version, không dùng `^`
 4:  http: ^1.0.0
+src/api.ts:
+- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
+1:export function load(x: any) {
+4:  return x as any;
+- [ts_ignore] `@ts-ignore` → sửa type; bất khả kháng thì `@ts-expect-error <lý do>` (tự báo khi hết lỗi)
+3:  // @ts-ignore
+- [console_log] `console.log` → xoá, hoặc dùng logger của dự án
+2:  console.log(x);
 supabase/functions/api/index.ts:
 - [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
 1:const headers = { 'Access-Control-Allow-Origin': '*' };
@@ -58,6 +66,14 @@ lib/src/pages/home/home_page.dart:
 pubspec.yaml:
 - [caret_version] Dependency phải pin EXACT version, không dùng `^`
 4:  http: ^1.0.0
+src/api.ts:
+- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
+1:export function load(x: any) {
+4:  return x as any;
+- [ts_ignore] `@ts-ignore` → sửa type; bất khả kháng thì `@ts-expect-error <lý do>` (tự báo khi hết lỗi)
+3:  // @ts-ignore
+- [console_log] `console.log` → xoá, hoặc dùng logger của dự án
+2:  console.log(x);
 supabase/functions/api/index.ts:
 - [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
 1:const headers = { 'Access-Control-Allow-Origin': '*' };
@@ -96,8 +112,16 @@ exit=1
 $ pre_edit (generated, native path)
 BLOCKED: <tmp>/lib/router/app_router.gr.dart là file generated. Sửa nguồn (app_router.dart / @RoutePage / ARB / assets) rồi chạy build_runner hoặc intl_utils:generate.
 exit=2
-$ pre_edit (source)
+$ pre_edit (skill chưa load → nhắc)
+Harness: lib/src/models/user.dart thuộc domain có skill `flutter-networking-and-data` → load bằng tool Skill trước khi sửa. Chỉ nhắc 1 lần mỗi phiên; đã nắm convention thì cứ sửa tiếp. (tắt: HARNESS_DISABLE=skill_hint)
+exit=2
+$ pre_edit (đã nhắc trong phiên)
 exit=0
+$ pre_edit (skill đã load)
+exit=0
+$ pre_edit (supabase)
+Harness: supabase/migrations/001_init.sql thuộc domain có skill `supabase-security-review` → load bằng tool Skill trước khi sửa. Chỉ nhắc 1 lần mỗi phiên; đã nắm convention thì cứ sửa tiếp. (tắt: HARNESS_DISABLE=skill_hint)
+exit=2
 $ stop_verify
 Chưa xong — harness verify:
 lib/l10n/intl_en.arb:
@@ -123,6 +147,14 @@ lib/src/pages/home/home_page.dart:
 pubspec.yaml:
 - [caret_version] Dependency phải pin EXACT version, không dùng `^`
 4:  http: ^1.0.0
+src/api.ts:
+- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
+1:export function load(x: any) {
+4:  return x as any;
+- [ts_ignore] `@ts-ignore` → sửa type; bất khả kháng thì `@ts-expect-error <lý do>` (tự báo khi hết lỗi)
+3:  // @ts-ignore
+- [console_log] `console.log` → xoá, hoặc dùng logger của dự án
+2:  console.log(x);
 supabase/functions/api/index.ts:
 - [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
 1:const headers = { 'Access-Control-Allow-Origin': '*' };
@@ -137,4 +169,46 @@ CLAUDE.md:
 4:lib/src/missing.dart
 exit=2
 $ stop_verify (active)
+exit=0
+$ scaffold (lần đầu)
+harness 5.0.0 · pack: flutter supabase web_ts
+  tạo      AGENTS.md
+  tạo      ARCHITECTURE.md
+  giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
+  tạo      .github/workflows/harness.yml
+  tạo      docs/PLANS.md
+  tạo      docs/QUALITY_SCORE.md
+  tạo      docs/exec-plans/active/.gitkeep
+  tạo      docs/exec-plans/completed/.gitkeep
+  tạo      docs/golden-principles.md
+  tạo      docs/product-specs/.gitkeep
+  tạo      docs/tech-debt-tracker.md
+  giữ      .claude/harness.env (đã sửa tay hoặc có từ trước)
+exit=0
+$ AGENTS.md: khối stack
+<!-- harness:stack:start -->
+### Flutter (bộ base MVVM + Provider)
+### Supabase
+### Web / TypeScript
+<!-- harness:stack:end -->
+exit=0
+$ docs-check AGENTS.md
+exit=0
+$ scaffold (chạy lại)
+harness 5.0.0 · pack: flutter supabase web_ts
+  giữ nguyên AGENTS.md
+  giữ nguyên ARCHITECTURE.md
+  giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
+  giữ nguyên .github/workflows/harness.yml
+  giữ nguyên docs/PLANS.md
+  giữ nguyên docs/QUALITY_SCORE.md
+  giữ nguyên docs/exec-plans/active/.gitkeep
+  giữ nguyên docs/exec-plans/completed/.gitkeep
+  giữ nguyên docs/golden-principles.md
+  giữ nguyên docs/product-specs/.gitkeep
+  giữ nguyên docs/tech-debt-tracker.md
+  giữ      .claude/harness.env (đã sửa tay hoặc có từ trước)
+exit=0
+$ scaffold (sau khi sửa tay)
+  giữ      docs/PLANS.md (đã sửa tay hoặc có từ trước)
 exit=0

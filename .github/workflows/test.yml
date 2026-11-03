@@ -1,0 +1,14 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  golden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Golden test engine + hooks + scaffold
+        run: bash plugins/harness/engine/test/run.sh

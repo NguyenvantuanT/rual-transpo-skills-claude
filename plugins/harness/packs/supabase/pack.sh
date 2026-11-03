@@ -1,6 +1,8 @@
 # Pack supabase — migration SQL, RLS, edge function. Không phụ thuộc app là Flutter hay web. Hợp đồng: ../README.md
 supabase_markers="supabase"
 supabase_files="supabase/*.sql supabase/functions/*.ts supabase/functions/*.js"
+supabase_skills='^supabase/=supabase-security-review
+^lib/.*_queries\.dart$=flutter-supabase-queries'
 
 supabase_rules() {
   case "$rel" in

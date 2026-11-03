@@ -4,6 +4,11 @@ flutter_markers="pubspec.yaml"
 flutter_files="lib/*.dart lib/*.arb pubspec.yaml"
 flutter_generated='\.(gr|g|freezed)\.dart$|^lib/src/(gen|generated)/'
 flutter_generated_msg="Sửa nguồn (app_router.dart / @RoutePage / ARB / assets) rồi chạy build_runner hoặc intl_utils:generate."
+flutter_skills='lib/src/pages/.*_vm\.dart$=flutter-mvvm-provider-architecture
+lib/src/(pages|components)/=flutter-ui-style-guide
+lib/src/(services|models)/=flutter-networking-and-data
+lib/.*\.arb$=flutter-internationalization
+^(test|integration_test)/=flutter-testing'
 
 flutter_app_flag=$(cfg HARNESS_APP_FLAG)
 flutter_max_lines=$(cfg HARNESS_MAX_LINES); flutter_max_lines=${flutter_max_lines:-500}

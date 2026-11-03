@@ -3,7 +3,7 @@
   "owner": { "name": "tuannv1" },
   "metadata": { "description": "Harness Claude Code: engine luật + hooks dùng chung mọi stack, tri thức chọn theo stack" },
   "plugins": [
-    { "name": "harness", "source": "./plugins/harness", "description": "Cơ chế: engine check.sh + pack theo stack (tự bật theo file đánh dấu), hooks, docs-check, harness-init, harness-gardening, templates. Cài cho mọi repo app" },
+    { "name": "harness", "source": "./plugins/harness", "description": "Cơ chế: engine check.sh + pack theo stack (flutter, supabase, web_ts — tự bật theo file đánh dấu), hooks, agent reviewer/evaluator, scaffold AGENTS.md + docs, harness-init, harness-gardening. Cài cho mọi repo app" },
     { "name": "core", "source": "./plugins/core", "description": "Tri thức không phụ thuộc stack: UI/UX, frontend design, review code AI, giờ + tiền, offline sync" },
     { "name": "flutter", "source": "./plugins/flutter", "description": "Tri thức bộ base Flutter MVVM + Provider: skill flutter-*, agent flutter-mobile-dev" },
     { "name": "supabase", "source": "./plugins/supabase", "description": "Review bảo mật Supabase (SQL, RLS, view, trigger, edge function), dùng cho app Flutter hay web" },

@@ -21,7 +21,7 @@ Không có device nào → dừng, báo user (đừng giả vờ đã kiểm ch�
 
 ## 2. Chạy đúng flavor
 
-Lệnh run lấy từ mục **Chạy** trong `CLAUDE.md` của repo. Chạy nền và ghi log ra file để đọc lại:
+Lệnh run lấy từ mục **Stack** (và **Dự án**) trong `AGENTS.md` của repo. Chạy nền và ghi log ra file để đọc lại:
 
 ```bash
 fvm flutter run -d <id> --flavor <flavor> -t lib/app/main_<app>_<env>.dart \
