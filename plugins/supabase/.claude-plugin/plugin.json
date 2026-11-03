@@ -1,0 +1,6 @@
+{
+  "name": "supabase",
+  "version": "1.0.0",
+  "description": "Supabase: supabase-security-review. Rule máy sb_* nằm trong pack supabase của plugin harness",
+  "author": { "name": "tuannv1" }
+}

@@ -1,0 +1,4 @@
+name: fixture
+dependencies:
+  dio: 5.4.0
+  http: ^1.0.0

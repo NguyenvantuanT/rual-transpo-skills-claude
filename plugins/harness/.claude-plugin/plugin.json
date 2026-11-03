@@ -1,0 +1,6 @@
+{
+  "name": "harness",
+  "version": "5.0.0",
+  "description": "Harness engineering đa stack: engine luật (chỉ báo dòng mới, message chỉ cách sửa) + pack theo stack (flutter, supabase), hooks Pre/Post/Stop, docs-check, harness-init, harness-gardening, templates CLAUDE.md/docs/CI",
+  "author": { "name": "tuannv1" }
+}

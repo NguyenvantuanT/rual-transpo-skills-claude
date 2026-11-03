@@ -1,0 +1,39 @@
+name: harness
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+env:
+  HARNESS_REPO: <git URL của vtinter-harness>
+  HARNESS_REF: <tag đang dùng, vd v5.0.0 — không để main: commit mới lên harness không được làm đỏ CI dự án>
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git clone --depth 1 --branch "$HARNESS_REF" "$HARNESS_REPO" .harness
+
+      - name: Rules (chỉ dòng PR thêm/sửa — nợ cũ để harness-gardening)
+        if: github.event_name == 'pull_request'
+        env:
+          HARNESS_DIFF: origin/${{ github.base_ref }}
+        run: bash .harness/plugins/harness/engine/check.sh $(git diff --name-only --diff-filter=AMR "origin/${{ github.base_ref }}")
+      - name: Docs drift
+        run: bash .harness/plugins/harness/engine/docs-check.sh
+
+      # --- pack flutter (xoá nếu không phải Flutter) ---
+      - id: fvm
+        run: echo "version=$(jq -r .flutter .fvmrc)" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm.outputs.version }}
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - name: Test
+        run: if [ -d test ]; then flutter test; fi

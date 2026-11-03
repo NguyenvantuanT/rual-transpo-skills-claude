@@ -9,9 +9,9 @@ Các file sau được phỏng theo (viết lại theo convention vtinter-harnes
 | File trong repo này | Phỏng theo |
 |---|---|
 | `plugins/flutter-supabase/skills/flutter-supabase-queries/SKILL.md` | `plugins/flutter-supabase/skills/flutter-supabase-queries/SKILL.md` |
-| `plugins/flutter-supabase/skills/supabase-security-review/SKILL.md` | `plugins/flutter-supabase/skills/supabase-security-review/SKILL.md` |
+| `plugins/supabase/skills/supabase-security-review/SKILL.md` | `plugins/flutter-supabase/skills/supabase-security-review/SKILL.md` |
 | `plugins/flutter/skills/flutter-networking-and-data/references/models-generated.md` | `plugins/flutter-supabase/skills/flutter-data-model/SKILL.md` |
-| `plugins/flutter/scripts/check.sh` (rule `sb_*`) | các rule tự động mô tả trong `supabase-security-review` |
+| `plugins/harness/packs/supabase/pack.sh` (rule `sb_*`) | các rule tự động mô tả trong `supabase-security-review` |
 | `plugins/flutter/skills/flutter-testing/SKILL.md` | `plugins/flutter/skills/flutter-testing/SKILL.md` |
 | `plugins/flutter/skills/flutter-error-handling/SKILL.md` | `plugins/flutter/skills/flutter-error-handling-and-crash-reporting/SKILL.md` |
 | `plugins/flutter/skills/flutter-performance/SKILL.md` | `plugins/flutter/skills/flutter-performance-and-rebuild-optimization/SKILL.md` |

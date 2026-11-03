@@ -1,10 +1,12 @@
 {
   "name": "vtinter-harness",
   "owner": { "name": "tuannv1" },
-  "metadata": { "description": "Harness Claude Code: cài `core` cho mọi dự án, thêm plugin theo stack (`flutter`, `flutter-supabase`)" },
+  "metadata": { "description": "Harness Claude Code: engine luật + hooks dùng chung mọi stack, tri thức chọn theo stack" },
   "plugins": [
-    { "name": "core", "source": "./plugins/core", "description": "Skill không phụ thuộc stack: UI/UX, frontend design, review code AI, giờ + tiền, offline sync" },
-    { "name": "flutter", "source": "./plugins/flutter", "description": "Agent + skills + hooks + check.sh cho bộ base Flutter MVVM + Provider" },
-    { "name": "flutter-supabase", "source": "./plugins/flutter-supabase", "description": "Backend Supabase cho bộ base Flutter: query theo domain, review bảo mật RLS/SQL. Cần plugin `flutter` (rule sb_* trong check.sh)" }
+    { "name": "harness", "source": "./plugins/harness", "description": "Cơ chế: engine check.sh + pack theo stack (tự bật theo file đánh dấu), hooks, docs-check, harness-init, harness-gardening, templates. Cài cho mọi repo app" },
+    { "name": "core", "source": "./plugins/core", "description": "Tri thức không phụ thuộc stack: UI/UX, frontend design, review code AI, giờ + tiền, offline sync" },
+    { "name": "flutter", "source": "./plugins/flutter", "description": "Tri thức bộ base Flutter MVVM + Provider: skill flutter-*, agent flutter-mobile-dev" },
+    { "name": "supabase", "source": "./plugins/supabase", "description": "Review bảo mật Supabase (SQL, RLS, view, trigger, edge function), dùng cho app Flutter hay web" },
+    { "name": "flutter-supabase", "source": "./plugins/flutter-supabase", "description": "Phần ghép Flutter + Supabase: query class theo domain, select tường minh, RPC, realtime" }
   ]
 }
