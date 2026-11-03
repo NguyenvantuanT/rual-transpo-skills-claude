@@ -59,14 +59,14 @@ flutter_rules() {
       dir=$(dirname "$file")
       case "$disabled$flutter_arb_done" in *" arb_sync "*|*" $dir "*) ;; *)
         flutter_arb_done+="$dir "
-        keys() { grep -oE '^\s*"[^"@][^"]*"\s*:' "$1" | sed -E 's/^\s*"([^"]*)".*/\1/' | sort -u; }
+        keys() { grep -oE '^[[:space:]]*"[^"@][^"]*"[[:space:]]*:' "$1" | sed -E 's/^[[:space:]]*"([^"]*)".*/\1/' | sort -u; }
         all=$(for f in "$dir"/intl_*.arb; do keys "$f"; done | sort -u)
         scope="$all"
         if [ -n "$diff_base" ]; then
           scope=$(for f in "$dir"/intl_*.arb; do
                     r=$(relpath "$f")
                     if in_base "$r"; then git diff -U0 "$diff_base" -- "$r" 2>/dev/null | grep -E '^\+'; else cat "$f"; fi
-                  done | grep -oE '^\+?\s*"[^"@][^"]*"\s*:' | sed -E 's/^\+?\s*"([^"]*)".*/\1/' | sort -u)
+                  done | grep -oE '^\+?[[:space:]]*"[^"@][^"]*"[[:space:]]*:' | sed -E 's/^\+?[[:space:]]*"([^"]*)".*/\1/' | sort -u)
         fi
         for f in "$dir"/intl_*.arb; do
           missing=$(comm -23 <(printf '%s\n' "$all") <(keys "$f") | comm -12 - <(printf '%s\n' "$scope"))

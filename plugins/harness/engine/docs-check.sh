@@ -20,7 +20,7 @@ for doc in "$@"; do
 
   missing=$(grep -noE '`(lib|src|app|apps|packages|test|tests|integration_test|docs|android|ios|web|assets|tool|scripts|supabase|migrations)/[^`]+`' "$doc" \
     | tr -d '`' | while IFS=: read -r line path; do
-        case "$path" in *'<'*|*'*'*|*' '*|*'{'*|*'...'*) continue ;; esac
+        case "$path" in (*'<'*|*'*'*|*' '*|*'{'*|*'...'*) continue ;; esac
         path="${path%%#*}"; path="${path%/}"
         [ -e "$path" ] || printf '%s:%s\n' "$line" "$path"
       done)
