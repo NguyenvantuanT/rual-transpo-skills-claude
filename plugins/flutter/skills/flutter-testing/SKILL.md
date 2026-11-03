@@ -73,4 +73,4 @@ testWidgets('đang load → hiện AppCircularProgress', (tester) async {
 - Test mới phải **fail trước** (đảo expectation / phá code) rồi mới tin.
 - 1 test = 1 hành vi; tên test mô tả hành vi.
 - Reset global state (`locator.reset()`, prefs mock) trong `setUp`/`tearDown` — singleton rò rỉ làm test phụ thuộc thứ tự.
-- Chạy: `fvm flutter test` (CI chạy lại; hook Stop không chạy test để giữ nhanh).
+- Chạy: `fvm flutter test`. Hook Stop tự chạy test liên quan tới file vừa đổi (`test/**/<tên>_test.dart`), CI chạy toàn bộ.

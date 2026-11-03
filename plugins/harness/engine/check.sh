@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Harness rule engine. Usage: check.sh [file...]   (no args = mọi file tracked mà các pack đang bật phụ trách)
 # HARNESS_DIFF=<git ref> → chỉ báo vi phạm trên dòng thêm từ ref đó (hook: HEAD, CI: PR base). Không đặt = cả file (init, gardening).
-# Chạy từ root repo app. Exit 1 khi có rule fail. Dùng chung cho hook, CI và người. Rule nằm trong packs/<stack>/pack.sh.
+# Chạy từ root repo app (monorepo: vẫn root repo, engine tự chia file theo root của từng pack). Exit 1 khi có rule fail. Dùng chung cho hook, CI và người. Rule nằm trong packs/<stack>/pack.sh.
 . "$(dirname "$0")/lib.sh"
 max_out=60
 diff_base="${HARNESS_DIFF:-}"
@@ -16,7 +16,12 @@ added_lines() {
 
 if [ $# -eq 0 ]; then
   specs=""
-  for p in $packs; do eval "specs+=\" \$${p}_files\""; done
+  for p in $packs; do
+    eval "fs=\$${p}_files"
+    for d in $(pack_roots "$p"); do
+      for s in $fs; do if [ "$d" = . ]; then specs+=" $s"; else specs+=" $d/$s"; fi; done
+    done
+  done
   set -f; set -- $(git ls-files $specs 2>/dev/null | LC_ALL=C sort -u); set +f
 fi
 
@@ -24,12 +29,13 @@ out=""
 for file in "$@"; do
   file=$(norm "$file")
   [ -f "$file" ] || continue
-  rel=$(relpath "$file")
-  generated_by "$rel" >/dev/null && continue
+  rpath=$(relpath "$file")
+  generated_by "$rpath" >/dev/null && continue
   msgs=""
-  added=$(added_lines "$rel")
-  for p in $packs; do "${p}_rules"; done
-  [ -n "$msgs" ] && out+="$rel:"$'\n'"$msgs"
+  added=$(added_lines "$rpath")
+  # Pack chỉ thấy file nằm trong root của nó; $rel = path tính từ root pack, $rpath = path từ root repo.
+  for p in $packs; do d=$(pack_root "$p" "$rpath") || continue; rel=$(pack_rel "$d" "$rpath"); "${p}_rules"; done
+  [ -n "$msgs" ] && out+="$rpath:"$'\n'"$msgs"
 done
 
 [ -z "$out" ] && exit 0

@@ -50,7 +50,7 @@ flutter_rules() {
       flag sb_secret 'sk_live_[0-9A-Za-z]{10,}|sk-ant-[A-Za-z0-9_-]{10,}|sk-(proj-)?[A-Za-z0-9]{20,}|eyJ[A-Za-z0-9_-]{15,}\.eyJ[A-Za-z0-9_-]{15,}' 'Secret hard-code → đưa vào .env / secret store, đọc qua AppConfig'
       case "$disabled" in *" file_size "*) ;; *)
         n=$(wc -l < "$file")
-        old=0; in_base "$rel" && old=$(git show "$diff_base:$rel" 2>/dev/null | wc -l)
+        old=0; in_base "$rpath" && old=$(git show "$diff_base:$rpath" 2>/dev/null | wc -l)
         [ "$n" -gt "$flutter_max_lines" ] && { [ -z "$diff_base" ] || [ "$n" -gt "$old" ]; } && msgs+="- [file_size] $n dòng > $flutter_max_lines → tách sub-widget ra lib/src/components/<feature>/<widget>.dart"$'\n' ;;
       esac
       ;;

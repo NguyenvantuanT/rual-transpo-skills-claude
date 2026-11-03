@@ -36,7 +36,17 @@ actual=$(
   echo '{"type":"tool_use","name":"Skill","input":{"skill":"flutter:flutter-ui-style-guide"}}' > .git/t.jsonl
   run "pre_edit (skill đã load)"           "hook_input '$tmp/lib/src/pages/home/home_page.dart' | bash '$hooks/pre_edit.sh'"
   run "pre_edit (supabase)"                "hook_input '$tmp/supabase/migrations/001_init.sql' | bash '$hooks/pre_edit.sh'"
-  mkdir -p .claude; echo 'HARNESS_DISABLE=analyze squawk' > .claude/harness.env
+  bash_input() { printf '{"session_id": "s1", "tool_input": {"command": "%s"}}' "$1"; }
+  run "pre_bash (sed -i file generated)"   "bash_input 'sed -i s/a/b/ lib/router/app_router.gr.dart' | bash '$hooks/pre_bash.sh'"
+  run "pre_bash (đọc file generated → cho)" "bash_input 'cat lib/router/app_router.gr.dart' | bash '$hooks/pre_bash.sh'"
+  run "pre_bash (push --force)"            "bash_input 'git push --force origin main' | bash '$hooks/pre_bash.sh'"
+  run "pre_bash (force-with-lease → cho)"  "bash_input 'git push --force-with-lease' | bash '$hooks/pre_bash.sh'"
+  run "pre_bash (--no-verify)"             "bash_input 'git commit --no-verify -m x' | bash '$hooks/pre_bash.sh'"
+  run "session_start"                      "echo '{}' | bash '$hooks/session_start.sh'"
+  run "pre_edit (monorepo: migration đã sinh)" "hook_input '$tmp/apps/api/prisma/migrations/20260101_init/migration.sql' | bash '$hooks/pre_edit.sh'"
+  run "pre_edit (monorepo: unity .meta)"      "hook_input '$tmp/game-unity/Assets/Scripts/Player.cs.meta' | bash '$hooks/pre_edit.sh'"
+  run "pre_edit (monorepo: nhắc skill nest)"  "hook_input '$tmp/apps/api/src/users/users.controller.ts' | bash '$hooks/pre_edit.sh'"
+  mkdir -p .claude; echo 'HARNESS_DISABLE=analyze squawk ruff typecheck gofmt vet golangci gdlint gdformat test tsc eslint depcruise' > .claude/harness.env
   run "stop_verify"           "echo '{}' | bash '$hooks/stop_verify.sh'"
   run "stop_verify (active)"  "echo '{\"stop_hook_active\": true}' | bash '$hooks/stop_verify.sh'"
   run "scaffold (lần đầu)"    "bash '$scaffold'"

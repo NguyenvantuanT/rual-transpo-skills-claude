@@ -15,15 +15,23 @@ sig=$({ printf '%s\n' "$status"; git diff HEAD 2>/dev/null
 changed=$(printf '%s\n' "$status" | cut -c4- | sed 's/.* -> //; s/^"//; s/"$//')
 msgs=""
 
-# T1 của từng pack: regen, analyze, lint migration...
-for p in $packs; do declare -F "${p}_verify" >/dev/null && "${p}_verify"; done
-
-# T1 test: chỉ test liên quan tới file đổi, và chỉ khi analyze/lint đã sạch (đỡ tốn thời gian chạy test trên code chưa compile).
-if [ -z "$msgs" ]; then
-  case "$disabled" in *" test "*) ;; *)
-    for p in $packs; do declare -F "${p}_test" >/dev/null && "${p}_test"; done ;;
-  esac
-fi
+# T1 của từng pack, chạy trong từng root của pack (cwd = root, $changed = path tính từ root):
+# _verify (regen, analyze, lint...) rồi _test (test liên quan) — test chỉ chạy khi verify của root đó sạch.
+for p in $packs; do
+  for d in $(pack_roots "$p"); do
+    sub=$(printf '%s\n' "$changed" | while IFS= read -r f; do
+            [ -n "$f" ] && [ "$(pack_root "$p" "$f")" = "$d" ] && pack_rel "$d" "$f"
+          done)
+    [ -n "$sub" ] || continue
+    out=$(cd "$d" && changed="$sub" && msgs="" && {
+            declare -F "${p}_verify" >/dev/null && "${p}_verify"
+            if [ -z "$msgs" ]; then case "$disabled" in (*" test "*) ;; (*)
+              declare -F "${p}_test" >/dev/null && "${p}_test" ;; esac; fi
+            printf '%s' "$msgs"; })
+    [ -n "$out" ] || continue
+    if [ "$d" = . ]; then msgs+="$out"$'\n'; else msgs+="[$p · $d]"$'\n'"$out"$'\n'; fi
+  done
+done
 
 # Gate evaluator (mọi stack): plan đổi trong phiên mà acceptance criteria đã tick hết, hoặc đã chuyển sang completed/
 # → phải có dòng "- <YYYY-MM-DD> đạt hết" trong mục "## Evaluator" (kết quả subagent evaluator).
