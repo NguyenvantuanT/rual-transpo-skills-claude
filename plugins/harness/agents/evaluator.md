@@ -26,4 +26,11 @@ Agent viết code thường tự khen việc mình làm. Bạn là người ki�
 
 ## Báo cáo
 
-Bảng `tiêu chí | kết quả | bằng chứng`, rồi một dòng kết luận: **đạt hết** hoặc danh sách việc còn thiếu để agent chính làm tiếp.
+Bảng `tiêu chí | kết quả | bằng chứng`, rồi một dòng kết luận đúng format để agent chính chép vào mục `## Evaluator` của plan (Stop hook đọc dòng này):
+
+```
+- <YYYY-MM-DD> đạt hết — <bằng chứng rút gọn>
+- <YYYY-MM-DD> chưa đạt: <tiêu chí> — <việc còn thiếu>
+```
+
+Chỉ viết "đạt hết" khi **mọi** tiêu chí có bằng chứng đạt. "Không kiểm được" không phải là đạt.

@@ -29,6 +29,9 @@ Fact riêng của dự án nằm trong repo này; convention chung của stack n
 | Nợ kỹ thuật, xung đột rule ↔ code | `docs/tech-debt-tracker.md` |
 | Việc đang làm / đã xong | `docs/exec-plans/active/`, `docs/exec-plans/completed/` |
 | Spec sản phẩm | `docs/product-specs/` |
+| Thiết kế kỹ thuật, quyết định lớn (ADR) | `docs/design-docs/` |
+| Tài liệu ngoài cho agent (API bên thứ 3, llms.txt, spec chuẩn) | `docs/references/` |
+| Doc sinh tự động (schema DB, API) — không sửa tay | `docs/generated/` |
 | Rule bị tắt, pack đang bật | `.claude/harness.env` |
 
 ## Skill dùng chung
@@ -38,6 +41,11 @@ Fact riêng của dự án nằm trong repo này; convention chung của stack n
 | Thiết kế UI/UX, bảng màu, font | `ui-ux-pro-max` · reskin có chủ đích: `frontend-design` |
 | Giờ, múi giờ, lịch, giá, tiền | `datetime-and-money` |
 | Sửa dữ liệu lúc offline rồi đồng bộ | `offline-sync` |
+| Hợp đồng API client ↔ server (lỗi, phân trang, version) | `api-contract` |
+| Thiết kế bảng, index, migration | `database-design` |
+| Log, metric, alert, health check | `observability` |
+| Bug khó, test fail khó hiểu, lỗi production | `systematic-debugging` |
+| Branch, commit, PR, conflict | `git-workflow` |
 | Review diff do agent viết | `ai-code-review` (subagent `reviewer`) |
 
 ## Stack

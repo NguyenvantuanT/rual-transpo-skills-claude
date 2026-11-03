@@ -40,3 +40,14 @@ web_ts_verify() {
     fi ;;
   esac
 }
+
+# T1 test — runner của dự án, chỉ test liên quan tới file đổi. Không có vitest/jest → bỏ qua.
+web_ts_test() {
+  local ts bin=node_modules/.bin out
+  ts=$(printf '%s\n' "$changed" | grep -E '\.(ts|tsx|js|jsx)$' | grep -vE '^(supabase|node_modules)/' | while read -r f; do [ -f "$f" ] && echo "$f"; done)
+  [ -n "$ts" ] || return 0
+  if [ -x "$bin/vitest" ]; then out=$("$bin/vitest" related --run --passWithNoTests $ts 2>&1)
+  elif [ -x "$bin/jest" ]; then out=$("$bin/jest" --findRelatedTests --passWithNoTests $ts 2>&1)
+  else return 0; fi \
+    || msgs+="- [test] Test liên quan FAIL → sửa code (không sửa test cho xanh trừ khi test sai, ghi lý do):"$'\n'"$(printf '%s\n' "$out" | tail -30)"$'\n'
+}

@@ -1,4 +1,46 @@
 $ check (full)
+apps/api/src/users/users.controller.ts:
+- [nest_any_input] Input không có DTO → class DTO với `class-validator` (`@IsString()`, `@IsInt()`...) + `ValidationPipe({ whitelist: true })`
+4:  @Post() create(@Body() body: any) {
+- [nest_new_injectable] Tự `new` service → khai báo trong `providers` của module và inject qua constructor (test mới mock được)
+3:  private readonly svc = new UsersService()
+- [nest_process_env] Đọc `process.env` rải rác → khai báo trong config module (validate bằng zod/Joi lúc khởi động), inject `ConfigService`
+5:    if (!process.env.API_KEY) throw new Error('no key')
+- [nest_plain_error] `throw new Error` thành 500 mù → ném lỗi domain hoặc `NotFoundException`/`BadRequestException`/`ConflictException`... để exception filter map ra mã HTTP đúng
+5:    if (!process.env.API_KEY) throw new Error('no key')
+- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
+4:  @Post() create(@Body() body: any) {
+apps/web/app/page.tsx:
+- [next_img] `<img>` → `import Image from "next/image"` (tự tối ưu, lazy, tránh layout shift; cần width/height hoặc `fill`)
+4:  return <a href="/about"><img src="/a.png" /></a>
+- [next_internal_a] Link nội bộ bằng `<a>` → `<Link href="...">` từ `next/link` (prefetch, không reload trang)
+4:  return <a href="/about"><img src="/a.png" /></a>
+- [next_old_router] `next/router` là Pages Router → App Router dùng `useRouter`/`usePathname`/`useSearchParams` từ `next/navigation`
+1:import { useRouter } from 'next/router'
+- [next_public_secret] Biến `NEXT_PUBLIC_*` bị bundle xuống trình duyệt → secret phải bỏ tiền tố, chỉ đọc ở server (Server Component / Route Handler / Server Action)
+3:  const k = process.env.NEXT_PUBLIC_STRIPE_SECRET
+apps/web/components/form.tsx:
+- [react_index_key] `key={index}` làm React giữ sai state khi list đổi thứ tự → dùng id ổn định của item
+4:  return <ul>{items.map((x, i) => <li key={i}>{x}</li>)}</ul>
+- [next_client_server] File `'use client'` import code server / đọc env server → chuyển logic vào Server Component, Server Action hoặc Route Handler rồi truyền data qua props
+2:import { prisma } from '@/lib/db'
+game-godot/player.gd:
+- [gd_print] `print` còn sót → xoá, hoặc `push_warning()` / `push_error()` cho lỗi thật
+5:	print("ready")
+- [gd_untyped_var] Biến không khai type → `var x: Type = ...` hoặc `var x := ...` (static typing: nhanh hơn, editor bắt lỗi sớm)
+2:var speed = 200
+6:	var hud = get_node("../HUD")
+- [gd_parent_path] Path node đi ngược lên cha → `@export var target: Node` gán trong editor, hoặc signal lên cha (call down, signal up)
+6:	var hud = get_node("../HUD")
+game-unity/Assets/Scripts/Player.cs:
+- [unity_find] Find lúc runtime: chậm + gãy khi đổi tên → `[SerializeField] private T ref;` gán trong Inspector, hoặc inject
+6:        var gm = GameObject.Find("GameManager");
+- [unity_debug_log] `Debug.Log` còn sót → xoá, hoặc dùng logger có `[Conditional("UNITY_EDITOR")]`; lỗi thật → `Debug.LogError`
+7:        Debug.Log("tick");
+- [unity_public_field] Field public → `[SerializeField] private T name;` (+ property chỉ đọc nếu class khác cần)
+2:    public float speed = 5f;
+- [unity_camera_main] `Camera.main` mỗi lần gọi là một lần tìm → cache vào field trong Awake
+5:        var cam = Camera.main;
 lib/l10n/intl_en.arb:
 - [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
 lib/src/models/user.dart:
@@ -17,32 +59,52 @@ lib/src/pages/home/home_page.dart:
 9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
 - [hardcoded_text] Hardcoded text → thêm key vào mọi ARB, dùng `S.current.<key>`
 9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
-- [comment] Comment trong code → xoá, đặt tên tự giải thích (chỉ giữ `// ignore:`)
-8:    // TODO remove
-- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
-13:  final q = Supabase.instance.client;
-pubspec.yaml:
-- [caret_version] Dependency phải pin EXACT version, không dùng `^`
-4:  http: ^1.0.0
-src/api.ts:
-- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
-1:export function load(x: any) {
-4:  return x as any;
-- [ts_ignore] `@ts-ignore` → sửa type; bất khả kháng thì `@ts-expect-error <lý do>` (tự báo khi hết lỗi)
-3:  // @ts-ignore
-- [console_log] `console.log` → xoá, hoặc dùng logger của dự án
-2:  console.log(x);
-supabase/functions/api/index.ts:
-- [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
-1:const headers = { 'Access-Control-Allow-Origin': '*' };
-supabase/migrations/001_init.sql:
-- [sb_view_invoker] View thiếu security_invoker → chạy quyền owner, vượt RLS. Sửa: `CREATE VIEW v WITH (security_invoker = true) AS …`
-1: create view public.v_orders as select * from orders;
-- [sb_check_uid_only] `WITH CHECK` chỉ so `auth.uid() = user_id` → kiểm tra cả quyền sở hữu FK liên quan (thật sự N/A: thêm `-- security: fk-not-applicable` cùng dòng)
-3:create policy p on orders for insert with check (auth.uid() = user_id);
+… còn 39 dòng — chạy check.sh <file> cho từng file
 (tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
 exit=1
 $ check (diff HEAD)
+apps/api/src/users/users.controller.ts:
+- [nest_any_input] Input không có DTO → class DTO với `class-validator` (`@IsString()`, `@IsInt()`...) + `ValidationPipe({ whitelist: true })`
+4:  @Post() create(@Body() body: any) {
+- [nest_new_injectable] Tự `new` service → khai báo trong `providers` của module và inject qua constructor (test mới mock được)
+3:  private readonly svc = new UsersService()
+- [nest_process_env] Đọc `process.env` rải rác → khai báo trong config module (validate bằng zod/Joi lúc khởi động), inject `ConfigService`
+5:    if (!process.env.API_KEY) throw new Error('no key')
+- [nest_plain_error] `throw new Error` thành 500 mù → ném lỗi domain hoặc `NotFoundException`/`BadRequestException`/`ConflictException`... để exception filter map ra mã HTTP đúng
+5:    if (!process.env.API_KEY) throw new Error('no key')
+- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
+4:  @Post() create(@Body() body: any) {
+apps/web/app/page.tsx:
+- [next_img] `<img>` → `import Image from "next/image"` (tự tối ưu, lazy, tránh layout shift; cần width/height hoặc `fill`)
+4:  return <a href="/about"><img src="/a.png" /></a>
+- [next_internal_a] Link nội bộ bằng `<a>` → `<Link href="...">` từ `next/link` (prefetch, không reload trang)
+4:  return <a href="/about"><img src="/a.png" /></a>
+- [next_old_router] `next/router` là Pages Router → App Router dùng `useRouter`/`usePathname`/`useSearchParams` từ `next/navigation`
+1:import { useRouter } from 'next/router'
+- [next_public_secret] Biến `NEXT_PUBLIC_*` bị bundle xuống trình duyệt → secret phải bỏ tiền tố, chỉ đọc ở server (Server Component / Route Handler / Server Action)
+3:  const k = process.env.NEXT_PUBLIC_STRIPE_SECRET
+apps/web/components/form.tsx:
+- [react_index_key] `key={index}` làm React giữ sai state khi list đổi thứ tự → dùng id ổn định của item
+4:  return <ul>{items.map((x, i) => <li key={i}>{x}</li>)}</ul>
+- [next_client_server] File `'use client'` import code server / đọc env server → chuyển logic vào Server Component, Server Action hoặc Route Handler rồi truyền data qua props
+2:import { prisma } from '@/lib/db'
+game-godot/player.gd:
+- [gd_print] `print` còn sót → xoá, hoặc `push_warning()` / `push_error()` cho lỗi thật
+5:	print("ready")
+- [gd_untyped_var] Biến không khai type → `var x: Type = ...` hoặc `var x := ...` (static typing: nhanh hơn, editor bắt lỗi sớm)
+2:var speed = 200
+6:	var hud = get_node("../HUD")
+- [gd_parent_path] Path node đi ngược lên cha → `@export var target: Node` gán trong editor, hoặc signal lên cha (call down, signal up)
+6:	var hud = get_node("../HUD")
+game-unity/Assets/Scripts/Player.cs:
+- [unity_find] Find lúc runtime: chậm + gãy khi đổi tên → `[SerializeField] private T ref;` gán trong Inspector, hoặc inject
+6:        var gm = GameObject.Find("GameManager");
+- [unity_debug_log] `Debug.Log` còn sót → xoá, hoặc dùng logger có `[Conditional("UNITY_EDITOR")]`; lỗi thật → `Debug.LogError`
+7:        Debug.Log("tick");
+- [unity_public_field] Field public → `[SerializeField] private T name;` (+ property chỉ đọc nếu class khác cần)
+2:    public float speed = 5f;
+- [unity_camera_main] `Camera.main` mỗi lần gọi là một lần tìm → cache vào field trong Awake
+5:        var cam = Camera.main;
 lib/l10n/intl_en.arb:
 - [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
 lib/src/models/user.dart:
@@ -61,27 +123,7 @@ lib/src/pages/home/home_page.dart:
 9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
 - [comment] Comment trong code → xoá, đặt tên tự giải thích (chỉ giữ `// ignore:`)
 8:    // TODO remove
-- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
-13:  final q = Supabase.instance.client;
-pubspec.yaml:
-- [caret_version] Dependency phải pin EXACT version, không dùng `^`
-4:  http: ^1.0.0
-src/api.ts:
-- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
-1:export function load(x: any) {
-4:  return x as any;
-- [ts_ignore] `@ts-ignore` → sửa type; bất khả kháng thì `@ts-expect-error <lý do>` (tự báo khi hết lỗi)
-3:  // @ts-ignore
-- [console_log] `console.log` → xoá, hoặc dùng logger của dự án
-2:  console.log(x);
-supabase/functions/api/index.ts:
-- [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
-1:const headers = { 'Access-Control-Allow-Origin': '*' };
-supabase/migrations/001_init.sql:
-- [sb_view_invoker] View thiếu security_invoker → chạy quyền owner, vượt RLS. Sửa: `CREATE VIEW v WITH (security_invoker = true) AS …`
-1: create view public.v_orders as select * from orders;
-- [sb_check_uid_only] `WITH CHECK` chỉ so `auth.uid() = user_id` → kiểm tra cả quyền sở hữu FK liên quan (thật sự N/A: thêm `-- security: fk-not-applicable` cùng dòng)
-3:create policy p on orders for insert with check (auth.uid() = user_id);
+… còn 37 dòng — chạy check.sh <file> cho từng file
 (tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
 exit=1
 $ check (absolute path)
@@ -122,8 +164,79 @@ exit=0
 $ pre_edit (supabase)
 Harness: supabase/migrations/001_init.sql thuộc domain có skill `supabase-security-review` → load bằng tool Skill trước khi sửa. Chỉ nhắc 1 lần mỗi phiên; đã nắm convention thì cứ sửa tiếp. (tắt: HARNESS_DISABLE=skill_hint)
 exit=2
+$ pre_bash (sed -i file generated)
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Harness: lib/router/app_router.gr.dart là file generated, không ghi bằng shell. Sửa nguồn rồi chạy bước generate."}}
+exit=0
+$ pre_bash (đọc file generated → cho)
+exit=0
+$ pre_bash (push --force)
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"ask","permissionDecisionReason":"Harness: push --force ghi đè lịch sử remote. Dùng --force-with-lease nếu thật sự cần."}}
+exit=0
+$ pre_bash (force-with-lease → cho)
+exit=0
+$ pre_bash (--no-verify)
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"ask","permissionDecisionReason":"Harness: --no-verify bỏ qua git hook. Sửa lỗi hook báo thay vì bỏ qua."}}
+exit=0
+$ session_start
+Harness: pack flutter go(services/geo) godot(game-godot) nestjs(apps/api) nextjs(apps/web) python(services/billing) supabase unity(game-unity) web_ts(. apps/api apps/web). Đọc AGENTS.md trước khi làm.
+- Plan đang dở: docs/exec-plans/active/2026-01-01-demo.md (Demo) — bước tiếp: xem mục Tiến độ. Làm theo giao thức phiên trong docs/PLANS.md.
+exit=0
+$ pre_edit (monorepo: migration đã sinh)
+BLOCKED: <tmp>/apps/api/prisma/migrations/20260101_init/migration.sql là file generated. Migration đã sinh không sửa tay (DB thật đã chạy bản cũ) → sửa `prisma/schema.prisma` rồi `npx prisma migrate dev --name <việc>` để tạo migration mới.
+exit=2
+$ pre_edit (monorepo: unity .meta)
+BLOCKED: <tmp>/game-unity/Assets/Scripts/Player.cs.meta là file generated. Unity tự sinh file này (.meta giữ GUID tham chiếu asset — sửa tay làm vỡ reference). Tạo/đổi tên asset rồi để Editor sinh lại.
+exit=2
+$ pre_edit (monorepo: nhắc skill nest)
+Harness: apps/api/src/users/users.controller.ts thuộc domain có skill `nestjs-api-design` → load bằng tool Skill trước khi sửa. Chỉ nhắc 1 lần mỗi phiên; đã nắm convention thì cứ sửa tiếp. (tắt: HARNESS_DISABLE=skill_hint)
+exit=2
 $ stop_verify
 Chưa xong — harness verify:
+[nestjs · apps/api]
+- [prisma_migration] `prisma/schema.prisma` đổi nhưng chưa có migration mới → `npx prisma migrate dev --name <việc>` (chỉ đổi comment/format thì HARNESS_DISABLE=prisma_migration)
+- [plan_eval] docs/exec-plans/active/2026-01-01-demo.md: acceptance criteria đã tick hết nhưng chưa có kết quả evaluator → chạy subagent `evaluator`, ghi `- <YYYY-MM-DD> đạt hết — <bằng chứng>` vào mục `## Evaluator` (chưa đạt → bỏ tick tiêu chí đó, làm tiếp)
+apps/api/src/users/users.controller.ts:
+- [nest_any_input] Input không có DTO → class DTO với `class-validator` (`@IsString()`, `@IsInt()`...) + `ValidationPipe({ whitelist: true })`
+4:  @Post() create(@Body() body: any) {
+- [nest_new_injectable] Tự `new` service → khai báo trong `providers` của module và inject qua constructor (test mới mock được)
+3:  private readonly svc = new UsersService()
+- [nest_process_env] Đọc `process.env` rải rác → khai báo trong config module (validate bằng zod/Joi lúc khởi động), inject `ConfigService`
+5:    if (!process.env.API_KEY) throw new Error('no key')
+- [nest_plain_error] `throw new Error` thành 500 mù → ném lỗi domain hoặc `NotFoundException`/`BadRequestException`/`ConflictException`... để exception filter map ra mã HTTP đúng
+5:    if (!process.env.API_KEY) throw new Error('no key')
+- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
+4:  @Post() create(@Body() body: any) {
+apps/web/app/page.tsx:
+- [next_img] `<img>` → `import Image from "next/image"` (tự tối ưu, lazy, tránh layout shift; cần width/height hoặc `fill`)
+4:  return <a href="/about"><img src="/a.png" /></a>
+- [next_internal_a] Link nội bộ bằng `<a>` → `<Link href="...">` từ `next/link` (prefetch, không reload trang)
+4:  return <a href="/about"><img src="/a.png" /></a>
+- [next_old_router] `next/router` là Pages Router → App Router dùng `useRouter`/`usePathname`/`useSearchParams` từ `next/navigation`
+1:import { useRouter } from 'next/router'
+- [next_public_secret] Biến `NEXT_PUBLIC_*` bị bundle xuống trình duyệt → secret phải bỏ tiền tố, chỉ đọc ở server (Server Component / Route Handler / Server Action)
+3:  const k = process.env.NEXT_PUBLIC_STRIPE_SECRET
+apps/web/components/form.tsx:
+- [react_index_key] `key={index}` làm React giữ sai state khi list đổi thứ tự → dùng id ổn định của item
+4:  return <ul>{items.map((x, i) => <li key={i}>{x}</li>)}</ul>
+- [next_client_server] File `'use client'` import code server / đọc env server → chuyển logic vào Server Component, Server Action hoặc Route Handler rồi truyền data qua props
+2:import { prisma } from '@/lib/db'
+game-godot/player.gd:
+- [gd_print] `print` còn sót → xoá, hoặc `push_warning()` / `push_error()` cho lỗi thật
+5:	print("ready")
+- [gd_untyped_var] Biến không khai type → `var x: Type = ...` hoặc `var x := ...` (static typing: nhanh hơn, editor bắt lỗi sớm)
+2:var speed = 200
+6:	var hud = get_node("../HUD")
+- [gd_parent_path] Path node đi ngược lên cha → `@export var target: Node` gán trong editor, hoặc signal lên cha (call down, signal up)
+6:	var hud = get_node("../HUD")
+game-unity/Assets/Scripts/Player.cs:
+- [unity_find] Find lúc runtime: chậm + gãy khi đổi tên → `[SerializeField] private T ref;` gán trong Inspector, hoặc inject
+6:        var gm = GameObject.Find("GameManager");
+- [unity_debug_log] `Debug.Log` còn sót → xoá, hoặc dùng logger có `[Conditional("UNITY_EDITOR")]`; lỗi thật → `Debug.LogError`
+7:        Debug.Log("tick");
+- [unity_public_field] Field public → `[SerializeField] private T name;` (+ property chỉ đọc nếu class khác cần)
+2:    public float speed = 5f;
+- [unity_camera_main] `Camera.main` mỗi lần gọi là một lần tìm → cache vào field trong Awake
+5:        var cam = Camera.main;
 lib/l10n/intl_en.arb:
 - [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
 lib/src/models/user.dart:
@@ -142,27 +255,7 @@ lib/src/pages/home/home_page.dart:
 9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
 - [comment] Comment trong code → xoá, đặt tên tự giải thích (chỉ giữ `// ignore:`)
 8:    // TODO remove
-- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
-13:  final q = Supabase.instance.client;
-pubspec.yaml:
-- [caret_version] Dependency phải pin EXACT version, không dùng `^`
-4:  http: ^1.0.0
-src/api.ts:
-- [ts_any] `any` → khai báo type cụ thể, hoặc `unknown` rồi narrow (zod/type guard ở biên)
-1:export function load(x: any) {
-4:  return x as any;
-- [ts_ignore] `@ts-ignore` → sửa type; bất khả kháng thì `@ts-expect-error <lý do>` (tự báo khi hết lỗi)
-3:  // @ts-ignore
-- [console_log] `console.log` → xoá, hoặc dùng logger của dự án
-2:  console.log(x);
-supabase/functions/api/index.ts:
-- [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
-1:const headers = { 'Access-Control-Allow-Origin': '*' };
-supabase/migrations/001_init.sql:
-- [sb_view_invoker] View thiếu security_invoker → chạy quyền owner, vượt RLS. Sửa: `CREATE VIEW v WITH (security_invoker = true) AS …`
-1: create view public.v_orders as select * from orders;
-- [sb_check_uid_only] `WITH CHECK` chỉ so `auth.uid() = user_id` → kiểm tra cả quyền sở hữu FK liên quan (thật sự N/A: thêm `-- security: fk-not-applicable` cùng dòng)
-3:create policy p on orders for insert with check (auth.uid() = user_id);
+… còn 37 dòng — chạy check.sh <file> cho từng file
 (tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
 CLAUDE.md:
 - [doc_stale_path] Đường dẫn không còn tồn tại → sửa doc theo code thật (hoặc xoá dòng):
@@ -171,41 +264,54 @@ exit=2
 $ stop_verify (active)
 exit=0
 $ scaffold (lần đầu)
-harness 5.0.0 · pack: flutter supabase web_ts
+harness 6.0.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
   tạo      AGENTS.md
   tạo      ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
   tạo      .github/workflows/harness.yml
   tạo      docs/PLANS.md
   tạo      docs/QUALITY_SCORE.md
+  tạo      docs/design-docs/.gitkeep
   tạo      docs/exec-plans/active/.gitkeep
   tạo      docs/exec-plans/completed/.gitkeep
+  tạo      docs/generated/.gitkeep
   tạo      docs/golden-principles.md
   tạo      docs/product-specs/.gitkeep
+  tạo      docs/references/.gitkeep
   tạo      docs/tech-debt-tracker.md
   giữ      .claude/harness.env (đã sửa tay hoặc có từ trước)
 exit=0
 $ AGENTS.md: khối stack
 <!-- harness:stack:start -->
 ### Flutter (bộ base MVVM + Provider)
+### Go
+### Godot 4
+### NestJS (API + Prisma)
+### Next.js (App Router + React)
+### Python
 ### Supabase
-### Web / TypeScript
+### Unity
+### TypeScript (web / Node)
 <!-- harness:stack:end -->
 exit=0
 $ docs-check AGENTS.md
-exit=0
+AGENTS.md:
+- [doc_entry_size]      160 dòng > 150 → CLAUDE.md là mục lục: chuyển chi tiết sang docs/*.md, giữ lại 1 dòng trỏ tớiexit=1
 $ scaffold (chạy lại)
-harness 5.0.0 · pack: flutter supabase web_ts
+harness 6.0.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
   giữ nguyên AGENTS.md
   giữ nguyên ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
   giữ nguyên .github/workflows/harness.yml
   giữ nguyên docs/PLANS.md
   giữ nguyên docs/QUALITY_SCORE.md
+  giữ nguyên docs/design-docs/.gitkeep
   giữ nguyên docs/exec-plans/active/.gitkeep
   giữ nguyên docs/exec-plans/completed/.gitkeep
+  giữ nguyên docs/generated/.gitkeep
   giữ nguyên docs/golden-principles.md
   giữ nguyên docs/product-specs/.gitkeep
+  giữ nguyên docs/references/.gitkeep
   giữ nguyên docs/tech-debt-tracker.md
   giữ      .claude/harness.env (đã sửa tay hoặc có từ trước)
 exit=0

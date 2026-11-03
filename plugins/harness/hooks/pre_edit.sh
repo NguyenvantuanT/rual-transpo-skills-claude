@@ -6,6 +6,11 @@ file=$(field file_path)
 . "$(dirname "$0")/../engine/lib.sh"
 rel=$(relpath "$file")
 
+if [ "$rel" = .claude/harness.env ] && [ -f "$file" ]; then
+  printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"ask","permissionDecisionReason":"Harness: sửa .claude/harness.env (tắt rule / đổi pack) là quyết định của team, cần user đồng ý. Tắt rule thì ghi lý do vào mục Ngoại lệ của AGENTS.md."}}\n'
+  exit 0
+fi
+
 if p=$(generated_by "$rel"); then
   eval "msg=\$${p}_generated_msg"
   echo "BLOCKED: $file là file generated. ${msg:-Sửa nguồn rồi chạy lại bước generate.}" >&2
@@ -18,9 +23,12 @@ git_dir=$(git rev-parse --git-dir 2>/dev/null) || exit 0
 need=""
 for p in $packs; do
   eval "map=\$${p}_skills"
+  [ -n "$map" ] || continue
+  d=$(pack_root "$p" "$rel") || continue
+  prel=$(pack_rel "$d" "$rel")
   while IFS= read -r line; do
     [ -n "$line" ] || continue
-    printf '%s' "$rel" | grep -qE "${line%=*}" && { need+="${line##*=} "; break; }
+    printf '%s' "$prel" | grep -qE "${line%=*}" && { need+="${line##*=} "; break; }
   done <<< "$map"
 done
 [ -n "$need" ] || exit 0

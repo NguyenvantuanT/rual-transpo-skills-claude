@@ -38,7 +38,7 @@ jobs:
       - name: Test
         run: if [ -d test ]; then flutter test; fi
 
-      # --- pack web_ts (xoá nếu không dùng TypeScript) ---
+      # --- pack web_ts / nextjs / nestjs (xoá nếu không dùng TypeScript). Monorepo: thêm `working-directory: apps/<app>` cho từng bước ---
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -46,3 +46,17 @@ jobs:
       - run: npx tsc --noEmit
       - run: npx eslint .
       - run: npm test --if-present
+      - name: Prisma — schema khớp migration (pack nestjs, xoá nếu không dùng)
+        run: if [ -f prisma/schema.prisma ]; then npx prisma validate && npx prisma migrate diff --from-migrations prisma/migrations --to-schema-datamodel prisma/schema.prisma --shadow-database-url "$SHADOW_DATABASE_URL" --exit-code; fi
+        env:
+          SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
+
+      # --- pack python (xoá nếu không dùng) ---
+      # - uses: actions/setup-python@v5
+      #   with: { python-version: '3.12' }
+      # - run: pip install -e '.[dev]' && ruff check . && ruff format --check . && pytest -q
+
+      # --- pack go (xoá nếu không dùng) ---
+      # - uses: actions/setup-go@v5
+      #   with: { go-version-file: go.mod }
+      # - run: test -z "$(gofmt -l .)" && go vet ./... && go test ./...

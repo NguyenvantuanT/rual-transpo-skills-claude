@@ -50,7 +50,7 @@ flutter_rules() {
       flag sb_secret 'sk_live_[0-9A-Za-z]{10,}|sk-ant-[A-Za-z0-9_-]{10,}|sk-(proj-)?[A-Za-z0-9]{20,}|eyJ[A-Za-z0-9_-]{15,}\.eyJ[A-Za-z0-9_-]{15,}' 'Secret hard-code → đưa vào .env / secret store, đọc qua AppConfig'
       case "$disabled" in *" file_size "*) ;; *)
         n=$(wc -l < "$file")
-        old=0; in_base "$rel" && old=$(git show "$diff_base:$rel" 2>/dev/null | wc -l)
+        old=0; in_base "$rpath" && old=$(git show "$diff_base:$rpath" 2>/dev/null | wc -l)
         [ "$n" -gt "$flutter_max_lines" ] && { [ -z "$diff_base" ] || [ "$n" -gt "$old" ]; } && msgs+="- [file_size] $n dòng > $flutter_max_lines → tách sub-widget ra lib/src/components/<feature>/<widget>.dart"$'\n' ;;
       esac
       ;;
@@ -59,14 +59,14 @@ flutter_rules() {
       dir=$(dirname "$file")
       case "$disabled$flutter_arb_done" in *" arb_sync "*|*" $dir "*) ;; *)
         flutter_arb_done+="$dir "
-        keys() { grep -oE '^\s*"[^"@][^"]*"\s*:' "$1" | sed -E 's/^\s*"([^"]*)".*/\1/' | sort -u; }
+        keys() { grep -oE '^[[:space:]]*"[^"@][^"]*"[[:space:]]*:' "$1" | sed -E 's/^[[:space:]]*"([^"]*)".*/\1/' | sort -u; }
         all=$(for f in "$dir"/intl_*.arb; do keys "$f"; done | sort -u)
         scope="$all"
         if [ -n "$diff_base" ]; then
           scope=$(for f in "$dir"/intl_*.arb; do
                     r=$(relpath "$f")
                     if in_base "$r"; then git diff -U0 "$diff_base" -- "$r" 2>/dev/null | grep -E '^\+'; else cat "$f"; fi
-                  done | grep -oE '^\+?\s*"[^"@][^"]*"\s*:' | sed -E 's/^\+?\s*"([^"]*)".*/\1/' | sort -u)
+                  done | grep -oE '^\+?[[:space:]]*"[^"@][^"]*"[[:space:]]*:' | sed -E 's/^\+?[[:space:]]*"([^"]*)".*/\1/' | sort -u)
         fi
         for f in "$dir"/intl_*.arb; do
           missing=$(comm -23 <(printf '%s\n' "$all") <(keys "$f") | comm -12 - <(printf '%s\n' "$scope"))
@@ -81,6 +81,8 @@ flutter_rules() {
       ;;
   esac
 }
+
+flutter_bin() { if command -v fvm >/dev/null 2>&1; then echo "fvm flutter"; else echo flutter; fi; }
 
 # T1 — chạy trong Stop hook. $changed = file đổi (rel). Ghi vào $msgs.
 flutter_verify() {
@@ -98,10 +100,26 @@ flutter_verify() {
 
   printf '%s\n' "$changed" | grep -qE '\.(dart|yaml)$' || return 0
   case "$disabled" in *" analyze "*) return 0 ;; esac
-  flutter_cmd="flutter"
-  command -v fvm >/dev/null 2>&1 && flutter_cmd="fvm flutter"
+  flutter_cmd=$(flutter_bin)
   if ! out=$($flutter_cmd analyze --no-pub 2>&1); then
     issues=$(printf '%s\n' "$out" | grep -E '^\s*(error|warning|info) ' | head -20)
     msgs+="- flutter analyze FAIL:"$'\n'"${issues:-$(printf '%s\n' "$out" | tail -15)}"$'\n'
+  fi
+}
+
+# T1 test — chỉ test liên quan: file test đổi + test/**/<tên>_test.dart của file lib đổi. Không tìm thấy test → im (thiếu test là việc của reviewer/evaluator).
+flutter_test() {
+  [ -d test ] || return 0
+  local f t tests="" out
+  for f in $(printf '%s\n' "$changed" | grep -E '^(lib|test)/.*\.dart$' | grep -vE '\.(g|gr|freezed)\.dart$'); do
+    case "$f" in
+      test/*_test.dart) [ -f "$f" ] && tests+="$f"$'\n' ;;
+      lib/*) tests+="$(find test -name "$(basename "$f" .dart)_test.dart" 2>/dev/null)"$'\n' ;;
+    esac
+  done
+  tests=$(printf '%s' "$tests" | grep -v '^$' | sort -u | head -30)
+  [ -n "$tests" ] || return 0
+  if ! out=$($(flutter_bin) test --no-pub $tests 2>&1); then
+    msgs+="- [test] flutter test FAIL → sửa code (không sửa test cho xanh trừ khi test sai, ghi lý do):"$'\n'"$(printf '%s\n' "$out" | grep -vE '^[0-9]{2}:[0-9]{2} \+[0-9]+.*: (loading|Some tests)' | tail -25)"$'\n'
   fi
 }

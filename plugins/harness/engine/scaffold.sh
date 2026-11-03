@@ -16,7 +16,13 @@ render_stack() {
   [ -f AGENTS.md ] || return 0
   grep -q '<!-- harness:stack:start -->' AGENTS.md || { echo "  ! AGENTS.md thiếu marker harness:stack — bỏ qua bản đồ stack"; return 0; }
   local block="" p
-  for p in $packs; do [ -f "$harness_dir/packs/$p/map.md" ] && block+=$'\n'"$(cat "$harness_dir/packs/$p/map.md")"$'\n'; done
+  local d ds
+  for p in $packs; do
+    [ -f "$harness_dir/packs/$p/map.md" ] || continue
+    block+=$'\n'"$(cat "$harness_dir/packs/$p/map.md")"$'\n'
+    ds=""; for d in $(pack_roots "$p"); do [ "$d" = . ] || ds+=" \`$d/\`"; done
+    [ -n "$ds" ] && block+=$'\n'"Thư mục:$ds"$'\n'
+  done
   [ -n "$block" ] || block=$'\n'"_Chưa có pack cho stack của repo này — chỉ có docs-check + hooks chung._"$'\n'
   printf '%s' "$block" > .harness-stack.tmp
   awk -v f=.harness-stack.tmp '

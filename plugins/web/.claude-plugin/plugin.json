@@ -1,0 +1,6 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "Tri thức web Next.js (App Router) + React + TypeScript: skill kiến trúc route, data fetching, UI component, auth/bảo mật, test, hiệu năng, i18n, run-and-verify + agent nextjs-web-dev. Rule máy nằm trong pack nextjs/web_ts của plugin harness",
+  "author": { "name": "tuannv1" }
+}
