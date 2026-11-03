@@ -1,0 +1,6 @@
+{
+  "name": "flutter-supabase",
+  "version": "1.0.0",
+  "description": "Phần ghép Flutter + Supabase: flutter-supabase-queries. Cài cùng `flutter` và `supabase`",
+  "author": { "name": "tuannv1" }
+}

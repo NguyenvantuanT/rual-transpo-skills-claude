@@ -1,0 +1,6 @@
+{
+  "name": "flutter",
+  "version": "1.0.0",
+  "description": "Tri thức bộ base Flutter MVVM + Provider: skill flutter-* (kiến trúc, UI, data, i18n, test, lỗi, hiệu năng, push/deep link, flavor, deploy, run-and-verify) + agent flutter-mobile-dev. Rule máy nằm trong pack flutter của plugin harness",
+  "author": { "name": "tuannv1" }
+}

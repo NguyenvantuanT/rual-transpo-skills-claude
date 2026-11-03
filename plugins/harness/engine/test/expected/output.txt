@@ -1,0 +1,140 @@
+$ check (full)
+lib/l10n/intl_en.arb:
+- [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
+lib/src/models/user.dart:
+- [layer_models] models/ chỉ chứa data class + enum → không import pages/components/services/base
+1:import 'package:app/src/pages/home/home_page.dart';
+- [model_codegen] HARNESS_MODEL_STYLE=manual → viết tay `fromJson`/`toJson` (cascade `..`), không codegen
+3:@JsonSerializable()
+lib/src/pages/home/home_page.dart:
+- [null_assert] Null-assertion `!` → dùng `?.` / `??` / bind local sau null-check
+7:    final user = maybeUser!;
+- [navigator] Navigator.* → `appRouter.push(...)` / `context.router.maybePop()`
+4:  void go(BuildContext context) => Navigator.push(context, route);
+- [color_literal] Color literal → thêm token vào `AppColor` rồi dùng `AppColor.<name>`
+12:  final c = Color(0xFF000000);
+- [raw_button] Raw button → `AppMonoButton` (.small / .smallOutline)
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [hardcoded_text] Hardcoded text → thêm key vào mọi ARB, dùng `S.current.<key>`
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [comment] Comment trong code → xoá, đặt tên tự giải thích (chỉ giữ `// ignore:`)
+8:    // TODO remove
+- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
+13:  final q = Supabase.instance.client;
+pubspec.yaml:
+- [caret_version] Dependency phải pin EXACT version, không dùng `^`
+4:  http: ^1.0.0
+supabase/functions/api/index.ts:
+- [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
+1:const headers = { 'Access-Control-Allow-Origin': '*' };
+supabase/migrations/001_init.sql:
+- [sb_view_invoker] View thiếu security_invoker → chạy quyền owner, vượt RLS. Sửa: `CREATE VIEW v WITH (security_invoker = true) AS …`
+1: create view public.v_orders as select * from orders;
+- [sb_check_uid_only] `WITH CHECK` chỉ so `auth.uid() = user_id` → kiểm tra cả quyền sở hữu FK liên quan (thật sự N/A: thêm `-- security: fk-not-applicable` cùng dòng)
+3:create policy p on orders for insert with check (auth.uid() = user_id);
+(tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
+exit=1
+$ check (diff HEAD)
+lib/l10n/intl_en.arb:
+- [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
+lib/src/models/user.dart:
+- [layer_models] models/ chỉ chứa data class + enum → không import pages/components/services/base
+1:import 'package:app/src/pages/home/home_page.dart';
+- [model_codegen] HARNESS_MODEL_STYLE=manual → viết tay `fromJson`/`toJson` (cascade `..`), không codegen
+3:@JsonSerializable()
+lib/src/pages/home/home_page.dart:
+- [null_assert] Null-assertion `!` → dùng `?.` / `??` / bind local sau null-check
+7:    final user = maybeUser!;
+- [color_literal] Color literal → thêm token vào `AppColor` rồi dùng `AppColor.<name>`
+12:  final c = Color(0xFF000000);
+- [raw_button] Raw button → `AppMonoButton` (.small / .smallOutline)
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [hardcoded_text] Hardcoded text → thêm key vào mọi ARB, dùng `S.current.<key>`
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [comment] Comment trong code → xoá, đặt tên tự giải thích (chỉ giữ `// ignore:`)
+8:    // TODO remove
+- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
+13:  final q = Supabase.instance.client;
+pubspec.yaml:
+- [caret_version] Dependency phải pin EXACT version, không dùng `^`
+4:  http: ^1.0.0
+supabase/functions/api/index.ts:
+- [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
+1:const headers = { 'Access-Control-Allow-Origin': '*' };
+supabase/migrations/001_init.sql:
+- [sb_view_invoker] View thiếu security_invoker → chạy quyền owner, vượt RLS. Sửa: `CREATE VIEW v WITH (security_invoker = true) AS …`
+1: create view public.v_orders as select * from orders;
+- [sb_check_uid_only] `WITH CHECK` chỉ so `auth.uid() = user_id` → kiểm tra cả quyền sở hữu FK liên quan (thật sự N/A: thêm `-- security: fk-not-applicable` cùng dòng)
+3:create policy p on orders for insert with check (auth.uid() = user_id);
+(tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
+exit=1
+$ check (absolute path)
+lib/src/models/user.dart:
+- [layer_models] models/ chỉ chứa data class + enum → không import pages/components/services/base
+1:import 'package:app/src/pages/home/home_page.dart';
+- [model_codegen] HARNESS_MODEL_STYLE=manual → viết tay `fromJson`/`toJson` (cascade `..`), không codegen
+3:@JsonSerializable()
+(tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
+exit=1
+$ check (disabled rules)
+lib/src/pages/home/home_page.dart:
+- [color_literal] Color literal → thêm token vào `AppColor` rồi dùng `AppColor.<name>`
+12:  final c = Color(0xFF000000);
+- [raw_button] Raw button → `AppMonoButton` (.small / .smallOutline)
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [hardcoded_text] Hardcoded text → thêm key vào mọi ARB, dùng `S.current.<key>`
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
+13:  final q = Supabase.instance.client;
+(tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
+exit=1
+$ docs-check
+CLAUDE.md:
+- [doc_stale_path] Đường dẫn không còn tồn tại → sửa doc theo code thật (hoặc xoá dòng):
+4:lib/src/missing.dart
+exit=1
+$ pre_edit (generated, native path)
+BLOCKED: <tmp>/lib/router/app_router.gr.dart là file generated. Sửa nguồn (app_router.dart / @RoutePage / ARB / assets) rồi chạy build_runner hoặc intl_utils:generate.
+exit=2
+$ pre_edit (source)
+exit=0
+$ stop_verify
+Chưa xong — harness verify:
+lib/l10n/intl_en.arb:
+- [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
+lib/src/models/user.dart:
+- [layer_models] models/ chỉ chứa data class + enum → không import pages/components/services/base
+1:import 'package:app/src/pages/home/home_page.dart';
+- [model_codegen] HARNESS_MODEL_STYLE=manual → viết tay `fromJson`/`toJson` (cascade `..`), không codegen
+3:@JsonSerializable()
+lib/src/pages/home/home_page.dart:
+- [null_assert] Null-assertion `!` → dùng `?.` / `??` / bind local sau null-check
+7:    final user = maybeUser!;
+- [color_literal] Color literal → thêm token vào `AppColor` rồi dùng `AppColor.<name>`
+12:  final c = Color(0xFF000000);
+- [raw_button] Raw button → `AppMonoButton` (.small / .smallOutline)
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [hardcoded_text] Hardcoded text → thêm key vào mọi ARB, dùng `S.current.<key>`
+9:    return ElevatedButton(onPressed: null, child: Text('Hello'));
+- [comment] Comment trong code → xoá, đặt tên tự giải thích (chỉ giữ `// ignore:`)
+8:    // TODO remove
+- [supa_in_ui] UI không gọi Supabase → thêm method vào <domain>_queries.dart, VM gọi query
+13:  final q = Supabase.instance.client;
+pubspec.yaml:
+- [caret_version] Dependency phải pin EXACT version, không dùng `^`
+4:  http: ^1.0.0
+supabase/functions/api/index.ts:
+- [sb_cors_wildcard] CORS `*` → giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation)
+1:const headers = { 'Access-Control-Allow-Origin': '*' };
+supabase/migrations/001_init.sql:
+- [sb_view_invoker] View thiếu security_invoker → chạy quyền owner, vượt RLS. Sửa: `CREATE VIEW v WITH (security_invoker = true) AS …`
+1: create view public.v_orders as select * from orders;
+- [sb_check_uid_only] `WITH CHECK` chỉ so `auth.uid() = user_id` → kiểm tra cả quyền sở hữu FK liên quan (thật sự N/A: thêm `-- security: fk-not-applicable` cùng dòng)
+3:create policy p on orders for insert with check (auth.uid() = user_id);
+(tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
+CLAUDE.md:
+- [doc_stale_path] Đường dẫn không còn tồn tại → sửa doc theo code thật (hoặc xoá dòng):
+4:lib/src/missing.dart
+exit=2
+$ stop_verify (active)
+exit=0

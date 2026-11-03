@@ -1,0 +1,30 @@
+# Pack
+
+Một pack = luật máy + verify cho một stack. Engine (`../engine`) lo phần chung: đọc `.claude/harness.env`, chỉ báo dòng mới (`HARNESS_DIFF`), gom output, hooks. Pack chỉ khai báo stack của nó.
+
+`packs/<name>/pack.sh` được `source` bằng bash. `<name>` phải là tên biến bash hợp lệ (`web_ts`, không phải `web-ts`).
+
+| Khai báo | Bắt buộc | Ý nghĩa |
+|---|---|---|
+| `<name>_markers` | có | Glob ở root repo, có một cái tồn tại → pack bật. `HARNESS_PACKS` trong `harness.env` ghi đè |
+| `<name>_files` | có | Pathspec cho `git ls-files` khi quét toàn bộ (`check.sh` không tham số) |
+| `<name>_rules()` | có | Gọi cho **mọi** file được kiểm, kể cả file của pack khác → tự `case "$rel"` để lọc. Dùng `flag` hoặc ghi thẳng vào `$msgs` |
+| `<name>_generated` | không | Regex path file sinh ra: hook chặn sửa, engine bỏ qua |
+| `<name>_generated_msg` | không | Cách sửa khi bị chặn (sửa nguồn nào, chạy lệnh gì) |
+| `<name>_verify()` | không | T1, chạy trong Stop hook với `$changed` (file đổi, path tương đối). Ghi lỗi vào `$msgs`. Giữ dưới ~1–2 phút |
+
+Biến có sẵn trong `_rules`: `$file` (path đọc được), `$rel` (path tương đối từ root), `$added` (dòng mới hoặc `ALL`), `$diff_base`, `$disabled`. Hàm có sẵn: `flag`, `only_added`, `in_base`, `cfg`, `relpath`.
+
+```bash
+flag <rule_id> '<regex>' '<vấn đề> → <cách sửa>' ['<regex path bỏ qua>'] ['<regex dòng bỏ qua>']
+```
+
+Message phải chỉ **cách sửa**: nó đi thẳng vào context của agent. Rule id phải tắt được qua `HARNESS_DISABLE` và được liệt kê trong `../templates/harness.env`.
+
+Stack đã có linter tốt (eslint, dependency-cruiser, import-linter, squawk...) → trong `_verify` gọi công cụ đó và chuyển output thành `- [rule_id] … → cách sửa`, đừng viết lại bằng regex. Công cụ không có trên máy thì bỏ qua (`command -v`), không báo lỗi.
+
+## Thêm pack
+
+1. Tạo `packs/<name>/pack.sh` theo bảng trên.
+2. Thêm fixture vào `../engine/test/fixture/` (base + change có vi phạm), chạy `UPDATE=1 bash ../engine/test/run.sh`, đọc diff của `expected/output.txt` rồi commit.
+3. Không phải sửa engine. Nếu phải sửa → hợp đồng thiếu, sửa hợp đồng trước.

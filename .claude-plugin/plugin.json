@@ -1,6 +1,0 @@
-{
-  "name": "vtinter-harness",
-  "version": "3.4.0",
-  "description": "Harness engineering cho dự án Flutter bộ base MVVM + Provider: bản đồ (agent + skills + docs templates), luật máy ép (check.sh, docs-check.sh, hooks, CI), vòng phản hồi (run-and-verify, gardening)",
-  "author": { "name": "tuannv1" }
-}
