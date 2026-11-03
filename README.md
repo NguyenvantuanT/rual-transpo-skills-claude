@@ -39,7 +39,15 @@ Mỗi pack còn có `map.md`: mảnh bản đồ (lệnh chạy/test, bảng vi�
 
 Gate chung mọi stack: plan có acceptance criteria tick hết (hoặc nằm ở `completed/`) phải có dòng `- <ngày> đạt hết` của evaluator trong mục `## Evaluator` (rule `plan_eval`).
 
-Thêm stack (web, BE...) = thêm `plugins/harness/packs/<name>/` theo [hợp đồng pack](plugins/harness/packs/README.md) (có checklist pack mới), không sửa engine.
+## Thêm stack mới
+
+Một stack đầy đủ gồm 2 phần, không phải sửa engine:
+
+1. **Pack** (luật máy ép): `plugins/harness/packs/<name>/` gồm `pack.sh` + `map.md`, theo [hợp đồng pack](plugins/harness/packs/README.md) (có checklist pack mới). Thêm fixture vào golden test.
+2. **Plugin tri thức** (skill + agent): `plugins/<stack>/` gồm `.claude-plugin/plugin.json`, `skills/<tên>/SKILL.md` (40–70 dòng: rule + checklist, chi tiết để ở `references/`), `agents/<stack>-dev.md` (bản đồ + quy trình + khi nào dừng hỏi). Mẫu: `plugins/web`, `plugins/nestjs`, `plugins/flutter`.
+3. Nối 2 phần: `<name>_skills` trong `pack.sh` và bảng trong `map.md` trỏ đúng tên skill. Thêm plugin vào `.claude-plugin/marketplace.json` và bảng Plugin ở trên.
+
+Hiện tại `python`, `go`, `godot`, `unity` mới có pack, chưa có plugin tri thức.
 
 ## Luồng chạy
 
@@ -73,6 +81,16 @@ Hooks chỉ chạy ở repo đã init (có `.claude/harness.env`) hoặc có pac
 /plugin install flutter-supabase@vtinter-harness   # Flutter + Supabase
 ```
 
+Cài theo loại repo:
+
+| Repo | Plugin |
+|---|---|
+| Web Next.js | `harness` `core` `web` |
+| BE NestJS | `harness` `core` `nestjs` |
+| Monorepo web + BE | `harness` `core` `web` `nestjs` |
+| App Flutter | `harness` `core` `flutter` (+ `supabase` `flutter-supabase` nếu dùng Supabase) |
+| Python / Go / Godot / Unity | `harness` `core` (chưa có plugin tri thức riêng) |
+
 Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Skill chạy `scaffold.sh` để tạo `AGENTS.md` (có bản đồ theo stack), `CLAUDE.md`, `ARCHITECTURE.md`, `docs/`, `.claude/harness.env`, `.github/workflows/harness.yml` và `.claude/harness.lock`, điền thông tin dự án, rồi chạy baseline.
 
 Cập nhật harness hoặc thêm stack: chạy lại init. File đã sửa tay không bị ghi đè (so hash trong `harness.lock`), khối Stack trong `AGENTS.md` luôn được sinh lại.
@@ -102,4 +120,4 @@ Lỗi agent mắc lặp lại mà chưa bị bắt → thêm một dòng `flag <
 
 Test của chính repo này: `bash plugins/harness/engine/test/run.sh` (CI: `.github/workflows/test.yml`, chạy cả Ubuntu lẫn macOS vì hook chạy bằng `/bin/bash` 3.2 + BSD sed trên Mac — tránh `\s`, `sed -i` không đuôi, `case` không có `(` trong `$(...)`).
 
-Yêu cầu: `bash` (Git Bash trên Windows), `git`. Pack flutter cần `fvm` hoặc `flutter` trong PATH. Agent `reviewer` dùng skill `ai-code-review` của plugin `core`.
+Yêu cầu: `bash` (Git Bash trên Windows), `git`. Verify của pack dùng công cụ của dự án nếu có cài (thiếu thì bỏ qua): flutter cần `fvm` hoặc `flutter`; web_ts/nextjs/nestjs dùng `tsc`, `eslint`, `prisma` trong `node_modules/.bin`; python dùng `ruff`, `mypy`/`pyright`, `pytest`; go dùng `gofmt`, `go`, `golangci-lint`; godot dùng `gdlint`, `gdformat`. Agent `reviewer` dùng skill `ai-code-review` của plugin `core`.
