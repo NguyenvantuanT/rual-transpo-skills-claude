@@ -5,7 +5,7 @@ description: Native config + release cho Flutter iOS/Android 3-flavor (dev/stg/p
 
 # Flutter Deployment — iOS + Android, 3 flavor
 
-Đọc file này trước; chỉ mở file trong `references/` khi task cần đúng phần đó. Multi-app (N app × env) → thêm skill `flutter-multi-app-flavor`. Fact dự án (flavor thật, bundle ID, lệnh build) → `CLAUDE.md` của repo.
+Đọc file này trước; chỉ mở file trong `references/` khi task cần đúng phần đó. Multi-app (N app × env) → thêm skill `flutter-multi-app-flavor`. Fact dự án (flavor thật, bundle ID, lệnh build) → `AGENTS.md` của repo.
 
 ## Naming
 

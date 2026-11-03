@@ -16,7 +16,9 @@ cp -r "$here/fixture/change/." "$tmp/"
 git add -N .
 export CLAUDE_PROJECT_DIR="$tmp"
 
-hook_input() { printf '{"file_path": "%s"}' "$(printf '%s' "$1" | sed 's/\\/\\\\/g')"; }
+esc() { printf '%s' "$1" | sed 's/\\/\\\\/g'; }
+hook_input() { printf '{"session_id": "s1", "transcript_path": "%s", "file_path": "%s"}' "$(esc "$tmp/.git/t.jsonl")" "$(esc "$1")"; }
+scaffold=$here/../scaffold.sh
 run() { echo "\$ $1"; eval "$2" 2>&1; echo "exit=$?"; }
 actual=$(
   run "check (full)"          "bash '$check'"
@@ -29,10 +31,20 @@ actual=$(
   [ -n "$CHECK" ] && exit 0  # so với engine cũ: chỉ phần check/docs
   native=$(cygpath -w "$tmp" 2>/dev/null || echo "$tmp")
   run "pre_edit (generated, native path)" "hook_input '$native/lib/router/app_router.gr.dart' | bash '$hooks/pre_edit.sh'"
-  run "pre_edit (source)"     "hook_input '$tmp/lib/src/models/user.dart' | bash '$hooks/pre_edit.sh'"
+  run "pre_edit (skill chưa load → nhắc)" "hook_input '$tmp/lib/src/models/user.dart' | bash '$hooks/pre_edit.sh'"
+  run "pre_edit (đã nhắc trong phiên)"     "hook_input '$tmp/lib/src/models/user.dart' | bash '$hooks/pre_edit.sh'"
+  echo '{"type":"tool_use","name":"Skill","input":{"skill":"flutter:flutter-ui-style-guide"}}' > .git/t.jsonl
+  run "pre_edit (skill đã load)"           "hook_input '$tmp/lib/src/pages/home/home_page.dart' | bash '$hooks/pre_edit.sh'"
+  run "pre_edit (supabase)"                "hook_input '$tmp/supabase/migrations/001_init.sql' | bash '$hooks/pre_edit.sh'"
   mkdir -p .claude; echo 'HARNESS_DISABLE=analyze squawk' > .claude/harness.env
   run "stop_verify"           "echo '{}' | bash '$hooks/stop_verify.sh'"
   run "stop_verify (active)"  "echo '{\"stop_hook_active\": true}' | bash '$hooks/stop_verify.sh'"
+  run "scaffold (lần đầu)"    "bash '$scaffold'"
+  run "AGENTS.md: khối stack" "sed -n '/harness:stack:start/,/harness:stack:end/p' AGENTS.md | grep -E '^(###|<!--)'"
+  run "docs-check AGENTS.md"  "bash '$docs' AGENTS.md"
+  run "scaffold (chạy lại)"   "bash '$scaffold'"
+  echo '- sửa tay' >> docs/PLANS.md
+  run "scaffold (sau khi sửa tay)" "bash '$scaffold' | grep PLANS"
 )
 mixed=$(cygpath -m "$tmp" 2>/dev/null || echo "$tmp")
 actual=$(printf '%s\n' "$actual" | sed -e "s|$mixed|<tmp>|g" -e "s|$tmp|<tmp>|g")

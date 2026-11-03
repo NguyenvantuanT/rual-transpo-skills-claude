@@ -12,6 +12,8 @@ Một pack = luật máy + verify cho một stack. Engine (`../engine`) lo phầ
 | `<name>_generated` | không | Regex path file sinh ra: hook chặn sửa, engine bỏ qua |
 | `<name>_generated_msg` | không | Cách sửa khi bị chặn (sửa nguồn nào, chạy lệnh gì) |
 | `<name>_verify()` | không | T1, chạy trong Stop hook với `$changed` (file đổi, path tương đối). Ghi lỗi vào `$msgs`. Giữ dưới ~1–2 phút |
+| `<name>_skills` | không | Mỗi dòng `regex path=tên skill`, dòng khớp đầu tiên thắng. Sửa file khớp mà skill chưa load trong phiên → hook nhắc 1 lần |
+| `map.md` | nên có | Mảnh bản đồ cho `AGENTS.md` (mục Stack): lệnh chạy/test, bảng việc → skill, subagent. `scaffold.sh` ghép theo pack đang bật |
 
 Biến có sẵn trong `_rules`: `$file` (path đọc được), `$rel` (path tương đối từ root), `$added` (dòng mới hoặc `ALL`), `$diff_base`, `$disabled`. Hàm có sẵn: `flag`, `only_added`, `in_base`, `cfg`, `relpath`.
 
@@ -25,6 +27,6 @@ Stack đã có linter tốt (eslint, dependency-cruiser, import-linter, squawk..
 
 ## Thêm pack
 
-1. Tạo `packs/<name>/pack.sh` theo bảng trên.
+1. Tạo `packs/<name>/pack.sh` theo bảng trên và `packs/<name>/map.md`. Thêm rule id vào `../templates/harness.env`, khối CI vào `../templates/ci/harness.yml`.
 2. Thêm fixture vào `../engine/test/fixture/` (base + change có vi phạm), chạy `UPDATE=1 bash ../engine/test/run.sh`, đọc diff của `expected/output.txt` rồi commit.
 3. Không phải sửa engine. Nếu phải sửa → hợp đồng thiếu, sửa hợp đồng trước.

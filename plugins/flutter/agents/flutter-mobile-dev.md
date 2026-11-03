@@ -13,27 +13,11 @@ Bạn làm việc trong một harness: **convention** nằm ở skill, **fact d�
 
 | Cần | Ở đâu |
 |---|---|
-| Fact dự án (app, locale, lệnh chạy, ngoại lệ) | `CLAUDE.md` của repo → trỏ tiếp sang `ARCHITECTURE.md`, `docs/` |
+| Fact dự án (app, locale, lệnh chạy, ngoại lệ) | `AGENTS.md` của repo → trỏ tiếp sang `ARCHITECTURE.md`, `docs/` |
 | Nợ kỹ thuật, xung đột rule ↔ code đã biết | `docs/tech-debt-tracker.md` |
 | Việc lớn đang dở | `docs/exec-plans/active/` |
 | Rule bị tắt / cờ multi-app | `.claude/harness.env` |
-| Kiến trúc, VM/Page, DI, router, EventBus | skill `flutter-mvvm-provider-architecture` |
-| Dio/ApiClient, model (kiểu theo `HARNESS_MODEL_STYLE`), SharedPrefs, debounce | skill `flutter-networking-and-data` |
-| Backend Supabase: query, RPC, realtime, optimistic update | skill `flutter-supabase-queries` |
-| Sửa `supabase/` (SQL, RLS, view, trigger, edge function) | skill `supabase-security-review` |
-| Widget, màu, typography, list, button, form | skill `flutter-ui-style-guide` |
-| String, ARB, locale | skill `flutter-internationalization` |
-| Flavor, entry point, multi-app | skill `flutter-multi-app-flavor` |
-| Native config, signing, release | skill `flutter-deployment-guide` |
-| Chạy app, chụp màn hình, đọc log, integration test | skill `flutter-run-and-verify` |
-| Viết test unit VM / widget Page | skill `flutter-testing` |
-| Crash reporting, handler lỗi toàn app, màn lỗi | skill `flutter-error-handling` |
-| UI giật, rebuild thừa, scroll lag | skill `flutter-performance` |
-| Push notification, deep link | skill `flutter-push-and-deep-link` |
-| Giờ, múi giờ, lịch, giá, tiền | skill `datetime-and-money` |
-| Sửa dữ liệu lúc offline rồi đồng bộ | skill `offline-sync` |
-| Review diff do agent viết trước PR / merge | skill `ai-code-review` |
-| Reskin UI có chủ đích | skill `frontend-design` |
+| Việc nào → skill nào | mục **Stack** và **Skill dùng chung** trong `AGENTS.md` của repo (harness-init sinh, theo pack đang bật) |
 
 Load skill bằng tool `Skill` trước khi code phần thuộc domain đó. Ví dụ trong skill chỉ minh hoạ shape — grep code thật trước khi dùng tên class/file.
 

@@ -5,7 +5,7 @@ Rule bất biến, có chủ kiến, kiểm chứng được. Agent chép patter
 Mỗi rule: 1 dòng phát biểu · cách kiểm (rule id hoặc "gardening") · lý do.
 
 1. **Sửa code xấu, đừng mô tả nó.** Thấy bug/pattern lệch trong code mẫu → sửa hoặc ghi vào `docs/tech-debt-tracker.md` kèm plan dọn. Không viết "đừng copy file X" trong doc. · gardening · agent vẫn copy thứ nó thấy.
-2. **Validate data ở biên.** JSON → model qua `fromJson` có kiểu nullable rõ ràng; discriminator → enum `fromString()`. Không đoán shape. · review/gardening · tránh build trên data đoán mò.
-3. **Dùng helper chung thay vì tự viết.** Debounce, loading, button, tap, snack-bar đều có component sẵn. · `raw_*` rules · invariant tập trung một chỗ.
+2. **Validate data ở biên.** Dữ liệu từ ngoài (API, DB, input) → parse thành type rõ ràng ngay tại biên, field có thể thiếu thì khai nullable. Không đoán shape. · review/gardening · tránh build trên data đoán mò.
+3. **Dùng helper chung thay vì tự viết.** Debounce, loading, button, form, thông báo... dùng component/helper sẵn có của dự án. · rule của pack (vd Flutter `raw_*`) · invariant tập trung một chỗ.
 4. **Một nguồn sự thật cho mỗi fact.** Fact dự án ở `docs/`, convention chung ở skill plugin — không chép qua lại. · `docs-check.sh` · bản sao sẽ lệch.
 5. <rule riêng của dự án>

@@ -5,23 +5,19 @@ Bản đồ cấp cao. Mọi đường dẫn trong backtick được `docs-check
 ## Layer (hướng phụ thuộc chỉ đi xuống)
 
 ```
-pages/<app>/<feature>/   Page + VM + widgets/      ← được import mọi thứ bên dưới
-components/<feature>/    widget dùng chung         ← không import pages/
-services/<group>/        remote / local / ...      ← không import pages/, components/
-models/  + models/enums/ data class + enum         ← không import pages/, components/, services/, base/
-resources/ theme/ utils/ constants/ gen/ generated/
+<layer trên cùng — vd UI: page/screen + state>   ← được import mọi thứ bên dưới
+<layer giữa — vd service/repository>             ← không import UI
+<layer dưới — vd model/type>                     ← không import layer nào ở trên
 ```
 
-Hướng import được `check.sh` ép (rule `layer_*`).
+Hướng import được harness ép nếu pack của stack có rule layer (Flutter bộ base: `layer_*`; web: dependency-cruiser). Không có → ghi rõ ở đây và review tay.
 
 ## Domain
 
-| Domain | Pages | Models | Services |
+| Domain | UI | Logic / data | Ghi chú |
 |---|---|---|---|
-| <domain> | `lib/src/pages/<app>/<feature>/` | `lib/src/models/<x>_model.dart` | `lib/src/services/<group>/` |
+| <domain> | `<path>` | `<path>` | <1 dòng> |
 
-## Entry points & DI
+## Entry points
 
-- Entry: `lib/app/main_<app>_<env>.dart`
-- DI: `lib/src/utils/locator.dart`
-- Router: `lib/router/app_router.dart`
+- <app/server entry, DI, router — đường dẫn thật trong backtick>

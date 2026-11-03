@@ -11,7 +11,7 @@ Repo chia làm hai lớp:
 
 | Plugin | Khi nào cài | Nội dung |
 |---|---|---|
-| `harness` | Mọi repo app | `engine/` (check.sh, docs-check.sh), `packs/` (flutter, supabase), `hooks/`, skill `harness-init` + `harness-gardening`, `templates/` |
+| `harness` | Mọi repo app | `engine/` (check.sh, docs-check.sh, scaffold.sh), `packs/` (flutter, supabase, web_ts), `hooks/`, agent `reviewer` + `evaluator`, skill `harness-init` + `harness-gardening`, `templates/` (AGENTS.md, CLAUDE.md, docs/, CI) |
 | `core` | Mọi dự án | `ui-ux-pro-max` (từ [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT), `frontend-design`, `ai-code-review`, `datetime-and-money`, `offline-sync` |
 | `flutter` | App Flutter bộ base MVVM + Provider | Skill `flutter-*` (kiến trúc, UI, data, i18n, test, lỗi, hiệu năng, push/deep link, flavor, deploy, run-and-verify), agent `flutter-mobile-dev` |
 | `supabase` | Có thư mục `supabase/` | `supabase-security-review` |
@@ -23,15 +23,23 @@ Repo chia làm hai lớp:
 |---|---|---|---|
 | `flutter` | `pubspec.yaml` | `!`, Navigator, màu/nút/tap/progress thô, text cứng, comment, import `.gr.dart`, rẽ nhánh app, hướng import giữa layer, kiểu model, file size, ARB thiếu key, version `^`, `supa_in_ui` | Regen (router, l10n, `.g.dart`), `flutter analyze` |
 | `supabase` | `supabase/` | View thiếu `security_invoker`, `WITH CHECK` chỉ so uid, CORS `*`, secret hard-code | `squawk` cho migration (nếu máy có cài) |
+| `web_ts` | `tsconfig.json` | `any`, `@ts-ignore`, `console.log` | `tsc`, `eslint`, `dependency-cruiser` của dự án (nếu đã cài) |
 
-Thêm stack = thêm `plugins/harness/packs/<name>/pack.sh` theo [hợp đồng pack](plugins/harness/packs/README.md), không sửa engine.
+Mỗi pack còn có `map.md`: mảnh bản đồ (lệnh chạy/test, bảng việc → skill) được ghép vào mục Stack của `AGENTS.md`, và bảng path → skill để hook nhắc load skill đúng lúc.
+
+Thêm stack = thêm `plugins/harness/packs/<name>/` theo [hợp đồng pack](plugins/harness/packs/README.md), không sửa engine.
 
 ## Luồng chạy
 
 ```
-yêu cầu → Claude đọc CLAUDE.md (mục lục) → load skill / giao subagent
-  → mỗi Edit/Write: pre_edit (chặn file generated) · post_edit (check.sh, chỉ dòng mới) → lỗi thì tự sửa
+yêu cầu → Claude đọc CLAUDE.md → @AGENTS.md (mục lục + bảng việc → skill theo stack)
+  → việc lớn: exec plan ở docs/exec-plans/active/ (giao thức phiên trong docs/PLANS.md)
+  → mỗi Edit/Write:
+      pre_edit  — chặn file generated; file thuộc domain có skill mà chưa load → nhắc 1 lần
+      post_edit — check.sh, chỉ dòng mới → lỗi thì tự sửa
   → định dừng: stop_verify (check + docs-check + verify của từng pack) → fail thì phải làm tiếp
+  → xong việc lớn: subagent evaluator kiểm acceptance criteria (chạy test, chạy app, xem màn hình)
+  → trước PR: subagent reviewer review diff (chỉ đọc)
   → PR: CI chạy lại engine (theo tag của harness)
 định kỳ: harness-gardening → PR dọn rác nhỏ
 ```
@@ -49,7 +57,9 @@ Hooks chỉ chạy ở repo đã init (có `.claude/harness.env`) hoặc có pac
 /plugin install flutter-supabase@vtinter-harness   # Flutter + Supabase
 ```
 
-Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Skill sẽ tạo CLAUDE.md, `docs/`, `.claude/harness.env`, `.github/workflows/harness.yml`, rồi chạy baseline.
+Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Skill chạy `scaffold.sh` để tạo `AGENTS.md` (có bản đồ theo stack), `CLAUDE.md`, `ARCHITECTURE.md`, `docs/`, `.claude/harness.env`, `.github/workflows/harness.yml` và `.claude/harness.lock`, điền thông tin dự án, rồi chạy baseline.
+
+Cập nhật harness hoặc thêm stack: chạy lại init. File đã sửa tay không bị ghi đè (so hash trong `harness.lock`), khối Stack trong `AGENTS.md` luôn được sinh lại.
 
 Chạy tay từ root repo app:
 
@@ -74,4 +84,6 @@ Lỗi agent mắc lặp lại mà chưa bị bắt → thêm một dòng `flag <
 2. Thêm một dòng vi phạm vào `plugins/harness/engine/test/fixture/change/`, chạy `UPDATE=1 bash plugins/harness/engine/test/run.sh`, đọc diff của `expected/output.txt`.
 3. `bash plugins/harness/engine/test/run.sh` phải PASS trước khi commit.
 
-Yêu cầu: `bash` (Git Bash trên Windows), `git`. Pack flutter cần `fvm` hoặc `flutter` trong PATH.
+Test của chính repo này: `bash plugins/harness/engine/test/run.sh` (CI: `.github/workflows/test.yml`).
+
+Yêu cầu: `bash` (Git Bash trên Windows), `git`. Pack flutter cần `fvm` hoặc `flutter` trong PATH. Agent `reviewer` dùng skill `ai-code-review` của plugin `core`.
