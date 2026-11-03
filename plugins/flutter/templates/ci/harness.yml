@@ -21,9 +21,9 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           HARNESS_DIFF: origin/${{ github.base_ref }}
-        run: bash .harness/scripts/check.sh $(git diff --name-only "origin/${{ github.base_ref }}" -- lib supabase pubspec.yaml)
+        run: bash .harness/plugins/flutter/scripts/check.sh $(git diff --name-only "origin/${{ github.base_ref }}" -- lib supabase pubspec.yaml)
       - name: Docs drift
-        run: bash .harness/scripts/docs-check.sh
+        run: bash .harness/plugins/flutter/scripts/docs-check.sh
 
       - id: fvm
         run: echo "version=$(jq -r .flutter .fvmrc)" >> "$GITHUB_OUTPUT"

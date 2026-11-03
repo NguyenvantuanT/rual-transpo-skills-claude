@@ -16,7 +16,7 @@ Phỏng theo `supabase-security-review` của BOW Skills (MIT) — xem `THIRD_PA
 | `sb_secret` | Hard-code Stripe live key, service-role JWT, OpenAI/Anthropic key | Đưa vào secret của Supabase / CI, đọc qua env |
 | `sb_check_uid_only` | `WITH CHECK (auth.uid() = user_id)` mà không kiểm tra FK liên quan | Kiểm tra quyền sở hữu mọi FK; thật sự N/A thì thêm `-- security: fk-not-applicable` cùng dòng |
 
-Chạy tay toàn bộ: `bash <plugin>/scripts/check.sh $(git ls-files 'supabase/*')`.
+Chạy tay toàn bộ: `bash <plugin flutter>/scripts/check.sh $(git ls-files 'supabase/*')`.
 
 ## 2. Checklist tay (máy không thấy)
 

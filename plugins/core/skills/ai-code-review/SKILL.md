@@ -7,7 +7,7 @@ description: Review code do AI/agent viết trước khi mở hoặc merge PR �
 
 Phỏng theo `ai-generated-code-review` của BOW Skills (MIT) — xem `THIRD_PARTY_NOTICES.md`. Code AI viết trông chắc chắn, format đẹp, và sai theo kiểu người ít khi sai: giả định nó compile được và trông hợp lý — lỗi nằm dưới lớp bóng đó.
 
-`check.sh` + `flutter analyze` đã chặn phần cơ học (convention, `!`, secret, SQL rule). Review này tập trung vào thứ máy không thấy.
+Lint/analyzer của dự án (với Flutter: `check.sh` + `flutter analyze`) đã chặn phần cơ học (convention, `!`, secret, SQL rule). Review này tập trung vào thứ máy không thấy.
 
 ## 0. Trước khi đọc dòng nào
 

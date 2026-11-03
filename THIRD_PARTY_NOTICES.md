@@ -8,17 +8,17 @@ Các file sau được phỏng theo (viết lại theo convention vtinter-harnes
 
 | File trong repo này | Phỏng theo |
 |---|---|
-| `skills/flutter-supabase-queries/SKILL.md` | `plugins/flutter-supabase/skills/flutter-supabase-queries/SKILL.md` |
-| `skills/supabase-security-review/SKILL.md` | `plugins/flutter-supabase/skills/supabase-security-review/SKILL.md` |
-| `skills/flutter-networking-and-data/references/models-generated.md` | `plugins/flutter-supabase/skills/flutter-data-model/SKILL.md` |
-| `scripts/check.sh` (rule `sb_*`) | các rule tự động mô tả trong `supabase-security-review` |
-| `skills/flutter-testing/SKILL.md` | `plugins/flutter/skills/flutter-testing/SKILL.md` |
-| `skills/flutter-error-handling/SKILL.md` | `plugins/flutter/skills/flutter-error-handling-and-crash-reporting/SKILL.md` |
-| `skills/flutter-performance/SKILL.md` | `plugins/flutter/skills/flutter-performance-and-rebuild-optimization/SKILL.md` |
-| `skills/flutter-push-and-deep-link/` | `plugins/flutter/skills/flutter-push-notifications-and-deep-linking/SKILL.md` |
-| `skills/ai-code-review/SKILL.md` | `plugins/bow-core/skills/ai-generated-code-review/SKILL.md` |
-| `skills/datetime-and-money/SKILL.md` | `plugins/bow-core/skills/datetime-timezone-and-money-correctness/SKILL.md` |
-| `skills/offline-sync/SKILL.md` | `plugins/bow-core/skills/offline-sync-and-conflict-resolution/SKILL.md` |
+| `plugins/flutter-supabase/skills/flutter-supabase-queries/SKILL.md` | `plugins/flutter-supabase/skills/flutter-supabase-queries/SKILL.md` |
+| `plugins/flutter-supabase/skills/supabase-security-review/SKILL.md` | `plugins/flutter-supabase/skills/supabase-security-review/SKILL.md` |
+| `plugins/flutter/skills/flutter-networking-and-data/references/models-generated.md` | `plugins/flutter-supabase/skills/flutter-data-model/SKILL.md` |
+| `plugins/flutter/scripts/check.sh` (rule `sb_*`) | các rule tự động mô tả trong `supabase-security-review` |
+| `plugins/flutter/skills/flutter-testing/SKILL.md` | `plugins/flutter/skills/flutter-testing/SKILL.md` |
+| `plugins/flutter/skills/flutter-error-handling/SKILL.md` | `plugins/flutter/skills/flutter-error-handling-and-crash-reporting/SKILL.md` |
+| `plugins/flutter/skills/flutter-performance/SKILL.md` | `plugins/flutter/skills/flutter-performance-and-rebuild-optimization/SKILL.md` |
+| `plugins/flutter/skills/flutter-push-and-deep-link/` | `plugins/flutter/skills/flutter-push-notifications-and-deep-linking/SKILL.md` |
+| `plugins/core/skills/ai-code-review/SKILL.md` | `plugins/bow-core/skills/ai-generated-code-review/SKILL.md` |
+| `plugins/core/skills/datetime-and-money/SKILL.md` | `plugins/bow-core/skills/datetime-timezone-and-money-correctness/SKILL.md` |
+| `plugins/core/skills/offline-sync/SKILL.md` | `plugins/bow-core/skills/offline-sync-and-conflict-resolution/SKILL.md` |
 
 ```
 MIT License
@@ -44,11 +44,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## UI UX Pro Max (`skills/ui-ux-pro-max`)
+## UI UX Pro Max (`plugins/core/skills/ui-ux-pro-max`)
 
 Nguồn: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (commit `3a13158`, v2.15.0, 2026-11-01).
 
-`skills/ui-ux-pro-max/` được chép nguyên từ `.claude/skills/ui-ux-pro-max/` của repo gốc, chỉ khác:
+`plugins/core/skills/ui-ux-pro-max/` được chép nguyên từ `.claude/skills/ui-ux-pro-max/` của repo gốc, chỉ khác:
 
 - Đường dẫn script trong `SKILL.md` đổi từ `${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/` thành `${CLAUDE_PLUGIN_ROOT}/skills/ui-ux-pro-max/`.
 - Bỏ thư mục `scripts/tests` (test của repo gốc, không cần khi dùng skill).

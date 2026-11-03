@@ -1,25 +1,34 @@
 # vtinter-harness
 
-Harness Claude Code cho các dự án Flutter dựng trên bộ base MVVM + Provider (BaseViewModel + MixinBasePage + get_it + auto_route + Dio/ApiClient + intl_utils + component `App*`).
+Marketplace Claude Code gồm nhiều plugin. Cài `core` cho mọi dự án, rồi thêm plugin theo stack. Hiện có stack Flutter dựng trên bộ base MVVM + Provider (BaseViewModel + MixinBasePage + get_it + auto_route + Dio/ApiClient + intl_utils + component `App*`).
 
 Theo tinh thần [harness engineering](https://openai.com/index/harness-engineering/): con người lái, agent làm. Việc của harness là cho agent **bản đồ** để biết đọc gì, **luật được máy ép** để không trôi, và **vòng phản hồi** để tự kiểm chứng.
+
+## Plugin
+
+| Plugin | Khi nào cài |
+|---|---|
+| `plugins/core` | Mọi dự án, mọi stack |
+| `plugins/flutter` | Dự án Flutter bộ base (agent, hooks, `check.sh`, templates) |
+| `plugins/flutter-supabase` | Dự án Flutter có backend Supabase. Cần cài kèm `flutter` (rule `sb_*` nằm trong `check.sh`) |
 
 ## Thành phần
 
 | | Vai trò |
 |---|---|
+| **core** | |
+| `skills/ui-ux-pro-max` | Thiết kế UI/UX: style, bảng màu, font, UX guideline, gợi ý theo stack. Lấy từ [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT |
+| `skills/frontend-design` | Định hướng thẩm mỹ khi dựng/reskin UI |
+| `skills/ai-code-review` | Review diff do agent viết: API bịa, logic, bảo mật, độ phức tạp |
+| `skills/datetime-and-money` | UTC/IANA/DST, tiền là số nguyên + mã tiền tệ |
+| `skills/offline-sync` | HLC, chiến lược theo field, tombstone, outbox, test hội tụ |
+| **flutter** | |
 | `agents/flutter-mobile-dev.md` | Bản đồ + quy trình cho subagent code Flutter |
 | `skills/flutter-*` | Convention chung của bộ base, nạp theo nhu cầu |
-| `skills/flutter-supabase-queries` | Backend Supabase: query theo domain, select tường minh + range, RPC, optimistic update, realtime |
-| `skills/supabase-security-review` | Review SQL/RLS/view/trigger/edge function. Rule máy `sb_*` có trong `check.sh` |
 | `skills/flutter-testing` | Test unit VM / widget Page theo bộ base, mock qua `get_it` |
 | `skills/flutter-error-handling` | Bốn kênh lỗi, phân loại lỗi, crash reporting + symbolication |
 | `skills/flutter-performance` | Rebuild của Provider/MixinBasePage, repaint, list, isolate |
 | `skills/flutter-push-and-deep-link` | FCM, local notification, app_links, pending intent qua `appRouter` |
-| `skills/datetime-and-money` | UTC/IANA/DST, tiền là số nguyên + mã tiền tệ |
-| `skills/offline-sync` | HLC, chiến lược theo field, tombstone, outbox, test hội tụ |
-| `skills/ai-code-review` | Review diff do agent viết: API bịa, logic, bảo mật, độ phức tạp |
-| `skills/ui-ux-pro-max` | Thiết kế UI/UX: style, bảng màu, font, UX guideline, gợi ý theo stack (có Flutter). Lấy từ [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT |
 | `skills/flutter-run-and-verify` | Agent tự chạy app, chụp màn hình, đọc log, viết integration test |
 | `skills/harness-init` | Dựng harness vào repo app: CLAUDE.md mục lục, `docs/`, `harness.env`, CI |
 | `skills/harness-gardening` | Dọn rác định kỳ: quét vi phạm, sửa doc lệch, cập nhật tech debt và quality score |
@@ -27,6 +36,9 @@ Theo tinh thần [harness engineering](https://openai.com/index/harness-engineer
 | `scripts/docs-check.sh` | Doc drift: đường dẫn trong doc phải tồn tại, CLAUDE.md phải ngắn |
 | `hooks/` | Pre: chặn sửa file generated. Post: `check.sh` cho file vừa sửa. Stop: `check.sh` + `docs-check.sh` + `flutter analyze` + kiểm tra đã regen chưa |
 | `templates/` | CLAUDE.md, ARCHITECTURE.md, `docs/`, `harness.env`, CI workflow |
+| **flutter-supabase** | |
+| `skills/flutter-supabase-queries` | Backend Supabase: query theo domain, select tường minh + range, RPC, optimistic update, realtime |
+| `skills/supabase-security-review` | Review SQL/RLS/view/trigger/edge function. Rule máy `sb_*` có trong `check.sh` của `flutter` |
 
 ## Luồng chạy
 
@@ -44,7 +56,9 @@ yêu cầu → Claude đọc CLAUDE.md (mục lục) → giao flutter-mobile-dev
 
 ```
 /plugin marketplace add <đường dẫn hoặc git URL của repo này>
-/plugin install vtinter-harness@vtinter-harness
+/plugin install core@vtinter-harness
+/plugin install flutter@vtinter-harness
+/plugin install flutter-supabase@vtinter-harness   # nếu dùng Supabase
 ```
 
 Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Skill sẽ tạo CLAUDE.md, `docs/`, `.claude/harness.env`, `.github/workflows/harness.yml`, rồi chạy baseline.
@@ -52,9 +66,9 @@ Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Ski
 Chạy tay:
 
 ```bash
-bash <plugin>/scripts/check.sh            # cả repo
-bash <plugin>/scripts/check.sh lib/a.dart # vài file
-bash <plugin>/scripts/docs-check.sh
+bash <plugin flutter>/scripts/check.sh            # cả repo
+bash <plugin flutter>/scripts/check.sh lib/a.dart # vài file
+bash <plugin flutter>/scripts/docs-check.sh
 ```
 
 ## Tiết kiệm token
@@ -67,6 +81,6 @@ bash <plugin>/scripts/docs-check.sh
 
 ## Thêm rule
 
-Lỗi agent mắc lặp lại mà chưa bị bắt → thêm một dòng `flag <id> '<regex>' '<cách sửa>' '<path bỏ qua>'` vào `scripts/check.sh`. Message phải chỉ **cách sửa**, vì nó được đưa thẳng vào context của agent. Sau đó thêm rule id vào danh sách trong `templates/harness.env`.
+Lỗi agent mắc lặp lại mà chưa bị bắt → thêm một dòng `flag <id> '<regex>' '<cách sửa>' '<path bỏ qua>'` vào `plugins/flutter/scripts/check.sh`. Message phải chỉ **cách sửa**, vì nó được đưa thẳng vào context của agent. Sau đó thêm rule id vào danh sách trong `plugins/flutter/templates/harness.env`.
 
 Yêu cầu: `bash` (Git Bash trên Windows), `git`, `fvm` hoặc `flutter` trong PATH.

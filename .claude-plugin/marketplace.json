@@ -1,8 +1,10 @@
 {
   "name": "vtinter-harness",
   "owner": { "name": "tuannv1" },
-  "metadata": { "description": "Harness Claude Code cho các dự án Flutter dùng chung bộ base MVVM + Provider" },
+  "metadata": { "description": "Harness Claude Code: cài `core` cho mọi dự án, thêm plugin theo stack (`flutter`, `flutter-supabase`)" },
   "plugins": [
-    { "name": "vtinter-harness", "source": "./", "description": "Agent + skills + hooks cho bộ base Flutter MVVM + Provider" }
+    { "name": "core", "source": "./plugins/core", "description": "Skill không phụ thuộc stack: UI/UX, frontend design, review code AI, giờ + tiền, offline sync" },
+    { "name": "flutter", "source": "./plugins/flutter", "description": "Agent + skills + hooks + check.sh cho bộ base Flutter MVVM + Provider" },
+    { "name": "flutter-supabase", "source": "./plugins/flutter-supabase", "description": "Backend Supabase cho bộ base Flutter: query theo domain, review bảo mật RLS/SQL. Cần plugin `flutter` (rule sb_* trong check.sh)" }
   ]
 }

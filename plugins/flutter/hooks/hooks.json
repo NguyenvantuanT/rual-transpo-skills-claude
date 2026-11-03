@@ -1,5 +1,5 @@
 {
-  "description": "vtinter-harness: chặn sửa file generated, check.sh sau mỗi edit, check + docs-check + analyze + regen trước khi dừng",
+  "description": "flutter: chặn sửa file generated, check.sh sau mỗi edit, check + docs-check + analyze + regen trước khi dừng",
   "hooks": {
     "PreToolUse": [
       {

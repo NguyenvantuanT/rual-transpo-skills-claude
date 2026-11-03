@@ -2,7 +2,7 @@
 
 Mục lục cho agent. Giữ file này ngắn (hook báo khi > 150 dòng) — chi tiết nằm ở `docs/`, ở đây chỉ trỏ tới.
 
-Dự án Flutter dựng trên bộ base MVVM + Provider, dùng plugin `vtinter-harness`. Convention chung nằm trong skill `flutter-*` của plugin; fact riêng của dự án nằm trong repo này. Lệch nhau → repo này + code thật thắng.
+Dự án Flutter dựng trên bộ base MVVM + Provider, dùng plugin `flutter` (+ `core`, `flutter-supabase` nếu có Supabase) của marketplace `vtinter-harness`. Convention chung nằm trong skill `flutter-*` của plugin; fact riêng của dự án nằm trong repo này. Lệch nhau → repo này + code thật thắng.
 
 ## Làm việc
 
