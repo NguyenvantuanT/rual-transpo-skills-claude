@@ -19,15 +19,17 @@ Repo chia làm hai lớp:
 
 ## Pack
 
-| Pack | Bật khi có | Luật (T0, mỗi edit) | Verify (T1, trước khi dừng) |
-|---|---|---|---|
-| `flutter` | `pubspec.yaml` | `!`, Navigator, màu/nút/tap/progress thô, text cứng, comment, import `.gr.dart`, rẽ nhánh app, hướng import giữa layer, kiểu model, file size, ARB thiếu key, version `^`, `supa_in_ui` | Regen (router, l10n, `.g.dart`), `flutter analyze` |
-| `supabase` | `supabase/` | View thiếu `security_invoker`, `WITH CHECK` chỉ so uid, CORS `*`, secret hard-code | `squawk` cho migration (nếu máy có cài) |
-| `web_ts` | `tsconfig.json` | `any`, `@ts-ignore`, `console.log` | `tsc`, `eslint`, `dependency-cruiser` của dự án (nếu đã cài) |
+| Pack | Bật khi có | Luật (T0, mỗi edit) | Verify (T1, trước khi dừng) | Test liên quan (T1) |
+|---|---|---|---|---|
+| `flutter` | `pubspec.yaml` | `!`, Navigator, màu/nút/tap/progress thô, text cứng, comment, import `.gr.dart`, rẽ nhánh app, hướng import giữa layer, kiểu model, file size, ARB thiếu key, version `^`, `supa_in_ui` | Regen (router, l10n, `.g.dart`), `flutter analyze` | `flutter test` cho `test/**/<tên>_test.dart` của file đổi |
+| `supabase` | `supabase/` | View thiếu `security_invoker`, `WITH CHECK` chỉ so uid, CORS `*`, secret hard-code | `squawk` cho migration (nếu máy có cài) | — |
+| `web_ts` | `tsconfig.json` | `any`, `@ts-ignore`, `console.log` | `tsc`, `eslint`, `dependency-cruiser` của dự án (nếu đã cài) | `vitest related` / `jest --findRelatedTests` |
 
 Mỗi pack còn có `map.md`: mảnh bản đồ (lệnh chạy/test, bảng việc → skill) được ghép vào mục Stack của `AGENTS.md`, và bảng path → skill để hook nhắc load skill đúng lúc.
 
-Thêm stack = thêm `plugins/harness/packs/<name>/` theo [hợp đồng pack](plugins/harness/packs/README.md), không sửa engine.
+Gate chung mọi stack: plan có acceptance criteria tick hết (hoặc nằm ở `completed/`) phải có dòng `- <ngày> đạt hết` của evaluator trong mục `## Evaluator` (rule `plan_eval`).
+
+Thêm stack (web, BE...) = thêm `plugins/harness/packs/<name>/` theo [hợp đồng pack](plugins/harness/packs/README.md) (có checklist pack mới), không sửa engine.
 
 ## Luồng chạy
 
@@ -37,8 +39,8 @@ yêu cầu → Claude đọc CLAUDE.md → @AGENTS.md (mục lục + bảng vi�
   → mỗi Edit/Write:
       pre_edit  — chặn file generated; file thuộc domain có skill mà chưa load → nhắc 1 lần
       post_edit — check.sh, chỉ dòng mới → lỗi thì tự sửa
-  → định dừng: stop_verify (check + docs-check + verify của từng pack) → fail thì phải làm tiếp
-  → xong việc lớn: subagent evaluator kiểm acceptance criteria (chạy test, chạy app, xem màn hình)
+  → định dừng: stop_verify (check + docs-check + verify của từng pack → test liên quan → gate evaluator của plan) → fail thì phải làm tiếp
+  → xong việc lớn: subagent evaluator kiểm acceptance criteria (chạy test, chạy app, xem màn hình), ghi kết quả vào plan
   → trước PR: subagent reviewer review diff (chỉ đọc)
   → PR: CI chạy lại engine (theo tag của harness)
 định kỳ: harness-gardening → PR dọn rác nhỏ
@@ -84,6 +86,6 @@ Lỗi agent mắc lặp lại mà chưa bị bắt → thêm một dòng `flag <
 2. Thêm một dòng vi phạm vào `plugins/harness/engine/test/fixture/change/`, chạy `UPDATE=1 bash plugins/harness/engine/test/run.sh`, đọc diff của `expected/output.txt`.
 3. `bash plugins/harness/engine/test/run.sh` phải PASS trước khi commit.
 
-Test của chính repo này: `bash plugins/harness/engine/test/run.sh` (CI: `.github/workflows/test.yml`).
+Test của chính repo này: `bash plugins/harness/engine/test/run.sh` (CI: `.github/workflows/test.yml`, chạy cả Ubuntu lẫn macOS vì hook chạy bằng `/bin/bash` 3.2 + BSD sed trên Mac — tránh `\s`, `sed -i` không đuôi, `case` không có `(` trong `$(...)`).
 
 Yêu cầu: `bash` (Git Bash trên Windows), `git`. Pack flutter cần `fvm` hoặc `flutter` trong PATH. Agent `reviewer` dùng skill `ai-code-review` của plugin `core`.

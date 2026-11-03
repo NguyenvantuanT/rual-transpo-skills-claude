@@ -7,7 +7,12 @@ on:
 
 jobs:
   golden:
-    runs-on: ubuntu-latest
+    # macOS: /bin/bash 3.2 + BSD sed/grep — hook chạy bằng chính bash này trên máy dev.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Golden test engine + hooks + scaffold

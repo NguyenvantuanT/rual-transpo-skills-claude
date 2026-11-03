@@ -124,6 +124,7 @@ Harness: supabase/migrations/001_init.sql thuộc domain có skill `supabase-sec
 exit=2
 $ stop_verify
 Chưa xong — harness verify:
+- [plan_eval] docs/exec-plans/active/2026-01-01-demo.md: acceptance criteria đã tick hết nhưng chưa có kết quả evaluator → chạy subagent `evaluator`, ghi `- <YYYY-MM-DD> đạt hết — <bằng chứng>` vào mục `## Evaluator` (chưa đạt → bỏ tick tiêu chí đó, làm tiếp)
 lib/l10n/intl_en.arb:
 - [arb_sync] vi thiếu key: bye → thêm vào intl_vi.arb
 lib/src/models/user.dart:
@@ -171,17 +172,20 @@ exit=2
 $ stop_verify (active)
 exit=0
 $ scaffold (lần đầu)
-harness 5.0.0 · pack: flutter supabase web_ts
+harness 5.1.0 · pack: flutter supabase web_ts
   tạo      AGENTS.md
   tạo      ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
   tạo      .github/workflows/harness.yml
   tạo      docs/PLANS.md
   tạo      docs/QUALITY_SCORE.md
+  tạo      docs/design-docs/.gitkeep
   tạo      docs/exec-plans/active/.gitkeep
   tạo      docs/exec-plans/completed/.gitkeep
+  tạo      docs/generated/.gitkeep
   tạo      docs/golden-principles.md
   tạo      docs/product-specs/.gitkeep
+  tạo      docs/references/.gitkeep
   tạo      docs/tech-debt-tracker.md
   giữ      .claude/harness.env (đã sửa tay hoặc có từ trước)
 exit=0
@@ -195,17 +199,20 @@ exit=0
 $ docs-check AGENTS.md
 exit=0
 $ scaffold (chạy lại)
-harness 5.0.0 · pack: flutter supabase web_ts
+harness 5.1.0 · pack: flutter supabase web_ts
   giữ nguyên AGENTS.md
   giữ nguyên ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
   giữ nguyên .github/workflows/harness.yml
   giữ nguyên docs/PLANS.md
   giữ nguyên docs/QUALITY_SCORE.md
+  giữ nguyên docs/design-docs/.gitkeep
   giữ nguyên docs/exec-plans/active/.gitkeep
   giữ nguyên docs/exec-plans/completed/.gitkeep
+  giữ nguyên docs/generated/.gitkeep
   giữ nguyên docs/golden-principles.md
   giữ nguyên docs/product-specs/.gitkeep
+  giữ nguyên docs/references/.gitkeep
   giữ nguyên docs/tech-debt-tracker.md
   giữ      .claude/harness.env (đã sửa tay hoặc có từ trước)
 exit=0

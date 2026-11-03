@@ -22,6 +22,9 @@ Plan là bộ nhớ giữa các phiên: phiên sau (người hoặc agent khác,
 
 ## Còn mở
 - <câu hỏi cần human>
+
+## Evaluator
+- <YYYY-MM-DD> <đạt hết | chưa đạt: tiêu chí nào> — <bằng chứng rút gọn>
 ```
 
 ## Giao thức phiên
@@ -29,4 +32,4 @@ Plan là bộ nhớ giữa các phiên: phiên sau (người hoặc agent khác,
 1. **Đầu phiên**: đọc plan active → `git log --oneline -10` → chạy test nhanh (lệnh ở mục Stack của `AGENTS.md`). Test đang đỏ từ trước → sửa trước khi làm bước mới.
 2. **Trong phiên**: làm **một** bước. Không sửa hay xoá acceptance criteria để cho dễ đạt; tiêu chí sai → ghi vào "Còn mở", hỏi human.
 3. **Cuối phiên**: commit, tick bước đã xong, thêm 1 dòng vào "Tiến độ". Dừng giữa chừng cũng phải ghi đang dở ở đâu.
-4. **Báo xong cả việc**: subagent `evaluator` kiểm từng acceptance criteria. Chưa đạt hết → chưa chuyển plan sang `completed/`.
+4. **Báo xong cả việc**: subagent `evaluator` kiểm từng acceptance criteria, kết quả ghi vào mục `## Evaluator`. Chưa đạt hết → bỏ tick tiêu chí chưa đạt, chưa chuyển plan sang `completed/`. Stop hook chặn (rule `plan_eval`) khi tiêu chí đã tick hết, hoặc plan nằm ở `completed/`, mà chưa có dòng `- <ngày> đạt hết`.

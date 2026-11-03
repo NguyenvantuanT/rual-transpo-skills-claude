@@ -82,6 +82,8 @@ flutter_rules() {
   esac
 }
 
+flutter_bin() { if command -v fvm >/dev/null 2>&1; then echo "fvm flutter"; else echo flutter; fi; }
+
 # T1 — chạy trong Stop hook. $changed = file đổi (rel). Ghi vào $msgs.
 flutter_verify() {
   newer() { [ -f "$1" ] && [ -f "$2" ] && [ "$1" -nt "$2" ]; }
@@ -98,10 +100,26 @@ flutter_verify() {
 
   printf '%s\n' "$changed" | grep -qE '\.(dart|yaml)$' || return 0
   case "$disabled" in *" analyze "*) return 0 ;; esac
-  flutter_cmd="flutter"
-  command -v fvm >/dev/null 2>&1 && flutter_cmd="fvm flutter"
+  flutter_cmd=$(flutter_bin)
   if ! out=$($flutter_cmd analyze --no-pub 2>&1); then
     issues=$(printf '%s\n' "$out" | grep -E '^\s*(error|warning|info) ' | head -20)
     msgs+="- flutter analyze FAIL:"$'\n'"${issues:-$(printf '%s\n' "$out" | tail -15)}"$'\n'
+  fi
+}
+
+# T1 test — chỉ test liên quan: file test đổi + test/**/<tên>_test.dart của file lib đổi. Không tìm thấy test → im (thiếu test là việc của reviewer/evaluator).
+flutter_test() {
+  [ -d test ] || return 0
+  local f t tests="" out
+  for f in $(printf '%s\n' "$changed" | grep -E '^(lib|test)/.*\.dart$' | grep -vE '\.(g|gr|freezed)\.dart$'); do
+    case "$f" in
+      test/*_test.dart) [ -f "$f" ] && tests+="$f"$'\n' ;;
+      lib/*) tests+="$(find test -name "$(basename "$f" .dart)_test.dart" 2>/dev/null)"$'\n' ;;
+    esac
+  done
+  tests=$(printf '%s' "$tests" | grep -v '^$' | sort -u | head -30)
+  [ -n "$tests" ] || return 0
+  if ! out=$($(flutter_bin) test --no-pub $tests 2>&1); then
+    msgs+="- [test] flutter test FAIL → sửa code (không sửa test cho xanh trừ khi test sai, ghi lý do):"$'\n'"$(printf '%s\n' "$out" | grep -vE '^[0-9]{2}:[0-9]{2} \+[0-9]+.*: (loading|Some tests)' | tail -25)"$'\n'
   fi
 }

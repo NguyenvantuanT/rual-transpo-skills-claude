@@ -18,6 +18,26 @@ msgs=""
 # T1 của từng pack: regen, analyze, lint migration...
 for p in $packs; do declare -F "${p}_verify" >/dev/null && "${p}_verify"; done
 
+# T1 test: chỉ test liên quan tới file đổi, và chỉ khi analyze/lint đã sạch (đỡ tốn thời gian chạy test trên code chưa compile).
+if [ -z "$msgs" ]; then
+  case "$disabled" in *" test "*) ;; *)
+    for p in $packs; do declare -F "${p}_test" >/dev/null && "${p}_test"; done ;;
+  esac
+fi
+
+# Gate evaluator (mọi stack): plan đổi trong phiên mà acceptance criteria đã tick hết, hoặc đã chuyển sang completed/
+# → phải có dòng "- <YYYY-MM-DD> đạt hết" trong mục "## Evaluator" (kết quả subagent evaluator).
+case "$disabled" in *" plan_eval "*) ;; *)
+  for plan in $(printf '%s\n' "$changed" | grep -E '^docs/exec-plans/(active|completed)/.*\.md$'); do
+    [ -f "$plan" ] || continue
+    crit=$(awk '/^## /{s=($0 ~ /^## Mục tiêu/)} s && /^- \[[ xX]\]/' "$plan")
+    [ -n "$crit" ] || continue
+    case "$plan" in docs/exec-plans/active/*) printf '%s\n' "$crit" | grep -q '^- \[ \]' && continue ;; esac
+    awk '/^## /{s=($0 ~ /^## Evaluator/)} s' "$plan" | grep -qE '^-[[:space:]]+[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+đạt hết' && continue
+    msgs+="- [plan_eval] $plan: acceptance criteria đã tick hết nhưng chưa có kết quả evaluator → chạy subagent \`evaluator\`, ghi \`- <YYYY-MM-DD> đạt hết — <bằng chứng>\` vào mục \`## Evaluator\` (chưa đạt → bỏ tick tiêu chí đó, làm tiếp)"$'\n'
+  done ;;
+esac
+
 code_files=$(printf '%s\n' "$changed" | grep -vE '\.md$' | while read -r f; do [ -f "$f" ] && echo "$f"; done)
 [ -n "$code_files" ] && { rules=$(HARNESS_DIFF=HEAD bash "$here/check.sh" $code_files) || msgs+="$rules"$'\n'; }
 
