@@ -1,0 +1,8 @@
+{
+  "name": "godot-mcp",
+  "version": "1.0.0",
+  "description": "Nối MCP server Coding-Solo/godot-mcp (MIT): mở editor, chạy project, đọc debug output, tạo scene/node. Cần Godot 4 và Node.js; đặt GODOT_PATH nếu godot không có trong PATH",
+  "author": { "name": "tuannv1" },
+  "license": "MIT",
+  "repository": "https://github.com/Coding-Solo/godot-mcp"
+}

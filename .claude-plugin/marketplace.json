@@ -41,6 +41,77 @@
       "name": "flutter-supabase",
       "source": "./plugins/flutter-supabase",
       "description": "Phần ghép Flutter + Supabase: query class theo domain, select tường minh, RPC, realtime"
+    },
+    {
+      "name": "godot-development",
+      "source": {
+        "source": "git-subdir",
+        "url": "HermeticOrmus/claude-code-game-development",
+        "path": "plugins/godot-development",
+        "sha": "b0d3bbf9c4982ab4a86edc46ecc85a5284b97c3c"
+      },
+      "description": "Godot 4: scene/node, signal, resource, GDScript typed hoặc C#, GDExtension, test GUT (upstream HermeticOrmus/claude-code-game-development, MIT)"
+    },
+    {
+      "name": "unity-development",
+      "source": {
+        "source": "git-subdir",
+        "url": "HermeticOrmus/claude-code-game-development",
+        "path": "plugins/unity-development",
+        "sha": "b0d3bbf9c4982ab4a86edc46ecc85a5284b97c3c"
+      },
+      "description": "Unity 6: MonoBehaviour hoặc DOTS, URP/HDRP, Addressables, Input System, ScriptableObject, C# chuẩn (upstream HermeticOrmus/claude-code-game-development, MIT)"
+    },
+    {
+      "name": "game-architecture",
+      "source": {
+        "source": "git-subdir",
+        "url": "HermeticOrmus/claude-code-game-development",
+        "path": "plugins/game-architecture",
+        "sha": "b0d3bbf9c4982ab4a86edc46ecc85a5284b97c3c"
+      },
+      "description": "Kiến trúc code game không phụ thuộc engine: game loop, ECS, event bus, data resource, service locator, quản lý scene, state stack (upstream HermeticOrmus/claude-code-game-development, MIT)"
+    },
+    {
+      "name": "unity-skills",
+      "source": {
+        "source": "github",
+        "repo": "Unity-Technologies/skills",
+        "sha": "46118a9f3743950846ad921fcce3ba382008aa88"
+      },
+      "description": "Skill chính chủ của Unity Technologies (35 skill). Unity Companion License: chỉ dùng cho dự án Unity",
+      "license": "LicenseRef-Unity-Companion-License",
+      "homepage": "https://github.com/Unity-Technologies/skills"
+    },
+    {
+      "name": "godot-skills-full",
+      "source": {
+        "source": "github",
+        "repo": "thedivergentai/Game-Dev-Agentic-Skills",
+        "sha": "db004d74c40686ca2f7a35fe067b119a9cda593e"
+      },
+      "description": "Bộ lớn 184 skill Godot + Bevy của thedivergentai (LGPL-3.0). Tốn context: chỉ bật khi cần tra sâu, mặc định dùng godot-development",
+      "license": "LGPL-3.0",
+      "homepage": "https://github.com/thedivergentai/Game-Dev-Agentic-Skills",
+      "defaultEnabled": false
+    },
+    {
+      "name": "game-studio",
+      "source": {
+        "source": "git-subdir",
+        "url": "Donchitos/Claude-Code-Game-Studios",
+        "path": ".claude",
+        "sha": "05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418"
+      },
+      "description": "Claude Code Game Studios (MIT): 74 skill + 49 agent theo vai trò studio (director, designer, godot/unity/unreal specialist). Thiết kế làm template project: skill trỏ .claude/docs và design/ của repo, nên chạy đầy đủ nhất khi clone template (xem README)",
+      "license": "MIT",
+      "homepage": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "defaultEnabled": false
+    },
+    {
+      "name": "godot-mcp",
+      "source": "./plugins/godot-mcp",
+      "description": "MCP server Godot (Coding-Solo/godot-mcp, MIT): chạy project, đọc lỗi runtime, sửa scene. Cần Godot 4 + Node.js"
     }
   ]
 }

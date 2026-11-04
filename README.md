@@ -19,6 +19,22 @@ Repo chia làm hai lớp:
 | `supabase` | Có thư mục `supabase/` | `supabase-security-review` |
 | `flutter-supabase` | Flutter + Supabase | `flutter-supabase-queries` |
 
+### Plugin game (lấy thẳng từ upstream, không chép)
+
+Marketplace chỉ trỏ tới repo gốc, khoá theo commit `sha`. Muốn lấy bản mới thì đổi `sha` trong `marketplace.json`. Nội dung và license thuộc tác giả gốc.
+
+| Plugin | Khi nào cài | Nguồn · license | Nội dung |
+|---|---|---|---|
+| `godot-development` | Game Godot 4 | [HermeticOrmus/claude-code-game-development](https://github.com/HermeticOrmus/claude-code-game-development) · MIT | Skill `godot-development`, agent `godot-engineer` |
+| `unity-development` | Game Unity | như trên · MIT | Skill `unity-development`, agent `unity-engineer` |
+| `game-architecture` | Mọi game | như trên · MIT | Skill `game-arch-patterns`, agent `game-architect` |
+| `unity-skills` | Game Unity | [Unity-Technologies/skills](https://github.com/Unity-Technologies/skills) · Unity Companion License (chỉ dùng cho dự án Unity) | 35 skill chính chủ: UI Toolkit/uGUI, URP, sprite, physics, multiplayer, IAP, localization... |
+| `godot-mcp` | Godot, muốn agent tự chạy game và đọc lỗi | [Coding-Solo/godot-mcp](https://github.com/Coding-Solo/godot-mcp) · MIT | MCP server `godot` (`npx @coding-solo/godot-mcp`). Cần Node.js, Godot 4 trong PATH hoặc biến `GODOT_PATH` |
+| `godot-skills-full` | Cần tra sâu Godot/Bevy (tắt sẵn) | [thedivergentai/Game-Dev-Agentic-Skills](https://github.com/thedivergentai/Game-Dev-Agentic-Skills) · LGPL-3.0 | 184 skill Godot + Bevy, tốn context |
+| `game-studio` | Muốn quy trình studio đầy đủ (tắt sẵn) | [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) · MIT | 74 skill + 49 agent theo vai trò (director, designer, specialist Godot/Unity/Unreal) |
+
+`game-studio` vốn là template project: skill của nó đọc `.claude/docs/` và `design/` trong repo game. Cài dạng plugin thì có agent và skill, còn các phần trỏ tới docs của template sẽ thiếu. Muốn chạy đủ thì tạo repo game từ template rồi mới cài `harness` lên trên. Unity MCP ([CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp), MIT) cần cài package vào Unity Editor nên không đóng gói ở đây; cài theo README của họ.
+
 ## Pack
 
 | Pack | Bật khi có | Luật (T0, mỗi edit) | Verify (T1, trước khi dừng) | Test liên quan (T1) |
@@ -47,7 +63,9 @@ Một stack đầy đủ gồm 2 phần, không phải sửa engine:
 2. **Plugin tri thức** (skill + agent): `plugins/<stack>/` gồm `.claude-plugin/plugin.json`, `skills/<tên>/SKILL.md` (40–70 dòng: rule + checklist, chi tiết để ở `references/`), `agents/<stack>-dev.md` (bản đồ + quy trình + khi nào dừng hỏi). Mẫu: `plugins/web`, `plugins/nestjs`, `plugins/flutter`.
 3. Nối 2 phần: `<name>_skills` trong `pack.sh` và bảng trong `map.md` trỏ đúng tên skill. Thêm plugin vào `.claude-plugin/marketplace.json` và bảng Plugin ở trên.
 
-Hiện tại `python`, `go`, `godot`, `unity` mới có pack, chưa có plugin tri thức.
+Hiện tại `python`, `go` mới có pack, chưa có plugin tri thức. `godot`, `unity` dùng plugin game lấy từ upstream (xem bảng Plugin game).
+
+Stack đã có người làm sẵn skill tốt thì đừng viết lại: thêm entry `github` hoặc `git-subdir` có `sha` vào `marketplace.json`, như các plugin game.
 
 ## Luồng chạy
 
@@ -79,6 +97,8 @@ Hooks chỉ chạy ở repo đã init (có `.claude/harness.env`) hoặc có pac
 /plugin install flutter@vtinter-harness            # app Flutter
 /plugin install supabase@vtinter-harness           # có Supabase
 /plugin install flutter-supabase@vtinter-harness   # Flutter + Supabase
+/plugin install godot-development@vtinter-harness  # game Godot (+ godot-mcp, game-architecture)
+/plugin install unity-development@vtinter-harness  # game Unity (+ unity-skills, game-architecture)
 ```
 
 Cài theo loại repo:
@@ -89,7 +109,9 @@ Cài theo loại repo:
 | BE NestJS | `harness` `core` `nestjs` |
 | Monorepo web + BE | `harness` `core` `web` `nestjs` |
 | App Flutter | `harness` `core` `flutter` (+ `supabase` `flutter-supabase` nếu dùng Supabase) |
-| Python / Go / Godot / Unity | `harness` `core` (chưa có plugin tri thức riêng) |
+| Game Godot | `harness` `core` `godot-development` `game-architecture` `godot-mcp` |
+| Game Unity | `harness` `core` `unity-development` `unity-skills` `game-architecture` |
+| Python / Go | `harness` `core` (chưa có plugin tri thức riêng) |
 
 Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Skill chạy `scaffold.sh` để tạo `AGENTS.md` (có bản đồ theo stack), `CLAUDE.md`, `ARCHITECTURE.md`, `docs/`, `.claude/harness.env`, `.github/workflows/harness.yml` và `.claude/harness.lock`, điền thông tin dự án, rồi chạy baseline.
 

@@ -264,7 +264,7 @@ exit=2
 $ stop_verify (active)
 exit=0
 $ scaffold (lần đầu)
-harness 6.0.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
+harness 6.1.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
   tạo      AGENTS.md
   tạo      ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
@@ -296,9 +296,9 @@ $ AGENTS.md: khối stack
 exit=0
 $ docs-check AGENTS.md
 AGENTS.md:
-- [doc_entry_size]      160 dòng > 150 → CLAUDE.md là mục lục: chuyển chi tiết sang docs/*.md, giữ lại 1 dòng trỏ tớiexit=1
+- [doc_entry_size]      172 dòng > 150 → CLAUDE.md là mục lục: chuyển chi tiết sang docs/*.md, giữ lại 1 dòng trỏ tớiexit=1
 $ scaffold (chạy lại)
-harness 6.0.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
+harness 6.1.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
   giữ nguyên AGENTS.md
   giữ nguyên ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)

@@ -4,7 +4,7 @@ unity_markers="ProjectSettings/ProjectVersion.txt"
 unity_files="Assets/*.cs"
 unity_generated='^(Library|Temp|Obj|obj|Logs|Build|Builds|UserSettings)/|\.(csproj|sln)$|\.meta$'
 unity_generated_msg="Unity tự sinh file này (.meta giữ GUID tham chiếu asset — sửa tay làm vỡ reference). Tạo/đổi tên asset rồi để Editor sinh lại."
-unity_skills=''
+unity_skills='^Assets/.*\.cs$=unity-development'
 unity_editor=$(cfg HARNESS_UNITY)
 
 unity_rules() {
