@@ -4,7 +4,7 @@ godot_markers="project.godot"
 godot_files="*.gd"
 godot_generated='(^|/)\.godot/|\.import$|\.uid$'
 godot_generated_msg="File do editor Godot sinh (.godot/, .import, .uid) → mở/refresh project trong editor hoặc chạy \`godot --headless --import\`."
-godot_skills=''
+godot_skills='\.(gd|tscn|tres)$=godot-development'
 
 godot_rules() {
   case "$rel" in
