@@ -1,6 +1,6 @@
 {
   "name": "harness",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "Harness engineering đa stack: engine luật (chỉ báo dòng mới, message chỉ cách sửa) + pack theo stack (flutter, supabase, web_ts, nextjs, nestjs, python, go, godot, unity; hỗ trợ monorepo), hooks SessionStart/Pre(Edit, Bash)/Post/Stop + nhắc load skill, agent reviewer/evaluator, scaffold AGENTS.md/docs/CI có lock, harness-init, harness-gardening",
   "author": {
     "name": "tuannv1"

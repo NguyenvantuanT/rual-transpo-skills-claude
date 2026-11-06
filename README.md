@@ -16,7 +16,7 @@ Repo chia làm hai lớp:
 | `web` | Web Next.js (App Router) + React | Skill Next.js/React: kiến trúc route, data fetching, UI component, auth/bảo mật, test, hiệu năng, i18n, run-and-verify; agent `nextjs-web-dev` |
 | `nestjs` | BE NestJS + Prisma | Skill NestJS: kiến trúc module, API design, Prisma, auth/bảo mật, queue/cron, observability, test, run-and-verify; agent `nestjs-backend-dev` |
 | `flutter` | App Flutter bộ base MVVM + Provider | Skill `flutter-*` (kiến trúc, UI, data, i18n, test, lỗi, hiệu năng, push/deep link, flavor, deploy, run-and-verify), agent `flutter-mobile-dev` |
-| `supabase` | Có thư mục `supabase/` | `supabase-security-review` |
+| `supabase` | Có Supabase | `supabase-migrations` (schema trong repo là nguồn sự thật), `supabase-security-review` |
 | `flutter-supabase` | Flutter + Supabase | `flutter-supabase-queries` |
 
 ### Plugin game (lấy thẳng từ upstream, không chép)
@@ -42,7 +42,7 @@ Marketplace chỉ trỏ tới repo gốc, khoá theo commit `sha`. Muốn lấy 
 | Pack | Bật khi có | Luật (T0, mỗi edit) | Verify (T1, trước khi dừng) | Test liên quan (T1) |
 |---|---|---|---|---|
 | `flutter` | `pubspec.yaml` | `!`, Navigator, màu/nút/tap/progress thô, text cứng, comment, import `.gr.dart`, rẽ nhánh app, hướng import giữa layer, kiểu model, file size, ARB thiếu key, version `^`, `supa_in_ui` | Regen (router, l10n, `.g.dart`), `flutter analyze` | `flutter test` cho `test/**/<tên>_test.dart` của file đổi |
-| `supabase` | `supabase/` | View thiếu `security_invoker`, `WITH CHECK` chỉ so uid, CORS `*`, secret hard-code | `squawk` cho migration (nếu máy có cài) | — |
+| `supabase` | `supabase/`, `supabase.example.cfg`, hoặc code/env có `SUPABASE_URL`, `/rest/v1/`, `@supabase/supabase-js` | View thiếu `security_invoker`, `WITH CHECK` chỉ so uid, CORS `*`, secret hard-code, dùng Supabase mà repo không có `supabase/migrations/*.sql` (`sb_migrations`). Hook nhắc ghi file migration sau mỗi MCP `apply_migration` | `squawk` cho migration (nếu máy có cài) | — |
 | `web_ts` | `tsconfig.json` | `any`, `@ts-ignore`, `console.log` | `tsc`, `eslint`, `dependency-cruiser` của dự án (nếu đã cài) | `vitest related` / `jest --findRelatedTests` |
 | `nextjs` | `next.config.*` | `<img>`, `<a>` nội bộ, `next/router`, secret `NEXT_PUBLIC_*`, file `'use client'` kéo code server, `dangerouslySetInnerHTML`, `key={index}` | (do `web_ts`) | (do `web_ts`) |
 | `nestjs` | `nest-cli.json` | Input không DTO, tự `new` service, raw SQL ghép chuỗi, `process.env` rải rác, `throw new Error` | Schema Prisma đổi mà chưa có migration, `prisma validate` | (do `web_ts`) |

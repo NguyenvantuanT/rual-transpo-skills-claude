@@ -162,7 +162,7 @@ exit=0
 $ pre_edit (skill đã load)
 exit=0
 $ pre_edit (supabase)
-Harness: supabase/migrations/001_init.sql thuộc domain có skill `supabase-security-review` → load bằng tool Skill trước khi sửa. Chỉ nhắc 1 lần mỗi phiên; đã nắm convention thì cứ sửa tiếp. (tắt: HARNESS_DISABLE=skill_hint)
+Harness: supabase/migrations/001_init.sql thuộc domain có skill `supabase-migrations` `supabase-security-review` → load bằng tool Skill trước khi sửa. Chỉ nhắc 1 lần mỗi phiên; đã nắm convention thì cứ sửa tiếp. (tắt: HARNESS_DISABLE=skill_hint)
 exit=2
 $ pre_bash (sed -i file generated)
 {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Harness: lib/router/app_router.gr.dart là file generated, không ghi bằng shell. Sửa nguồn rồi chạy bước generate."}}
@@ -264,7 +264,7 @@ exit=2
 $ stop_verify (active)
 exit=0
 $ scaffold (lần đầu)
-harness 6.1.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
+harness 6.2.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
   tạo      AGENTS.md
   tạo      ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
@@ -294,11 +294,14 @@ $ AGENTS.md: khối stack
 ### TypeScript (web / Node)
 <!-- harness:stack:end -->
 exit=0
+$ AGENTS.md: supabase migration là nguồn sự thật
+1
+exit=0
 $ docs-check AGENTS.md
 AGENTS.md:
-- [doc_entry_size]      172 dòng > 150 → CLAUDE.md là mục lục: chuyển chi tiết sang docs/*.md, giữ lại 1 dòng trỏ tớiexit=1
+- [doc_entry_size] 174 dòng > 150 → CLAUDE.md là mục lục: chuyển chi tiết sang docs/*.md, giữ lại 1 dòng trỏ tớiexit=1
 $ scaffold (chạy lại)
-harness 6.1.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
+harness 6.2.0 · pack: flutter go godot nestjs nextjs python supabase unity web_ts
   giữ nguyên AGENTS.md
   giữ nguyên ARCHITECTURE.md
   giữ      CLAUDE.md (đã sửa tay hoặc có từ trước)
@@ -317,4 +320,20 @@ harness 6.1.0 · pack: flutter go godot nestjs nextjs python supabase unity web_
 exit=0
 $ scaffold (sau khi sửa tay)
   giữ      docs/PLANS.md (đã sửa tay hoặc có từ trước)
+exit=0
+$ session_start (supabase theo nội dung)
+Harness: pack godot supabase. Đọc AGENTS.md trước khi làm.
+exit=0
+$ check (thiếu supabase/migrations)
+net/api.gd:
+- [sb_migrations] Dùng Supabase nhưng repo không có `supabase/migrations/*.sql` → schema chỉ nằm trên server, không ai review được. Lấy danh sách bằng MCP `list_migrations` (hoặc `supabase db pull`), ghi mỗi migration ra `supabase/migrations/<version>_<tên>.sql` trùng version + đúng SQL đã áp. Xem skill `supabase-migrations`
+2:const URL := "https://x.supabase.co/rest/v1/scores"
+(tắt rule cho dự án: HARNESS_DISABLE trong .claude/harness.env)
+exit=1
+$ post_migration (chưa có file → nhắc)
+{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"Harness: apply_migration `create_scores` vừa đổi schema trên project remote. Repo là nguồn sự thật của schema → ngay bây giờ: gọi `list_migrations` lấy version (YYYYMMDDHHMMSS) của migration này, ghi `supabase/migrations/<version>_create_scores.sql` đúng SQL vừa áp (không sửa file migration cũ), commit cùng code dùng nó. (tắt: HARNESS_DISABLE=sb_migration_hint)"}}
+exit=0
+$ post_migration (đã có file → im)
+exit=0
+$ check (có migration → qua)
 exit=0

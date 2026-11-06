@@ -51,10 +51,26 @@ actual=$(
   run "stop_verify (active)"  "echo '{\"stop_hook_active\": true}' | bash '$hooks/stop_verify.sh'"
   run "scaffold (lần đầu)"    "bash '$scaffold'"
   run "AGENTS.md: khối stack" "sed -n '/harness:stack:start/,/harness:stack:end/p' AGENTS.md | grep -E '^(###|<!--)'"
+  run "AGENTS.md: supabase migration là nguồn sự thật" "grep -c 'supabase/migrations/. là nguồn sự thật' AGENTS.md"
   run "docs-check AGENTS.md"  "bash '$docs' AGENTS.md"
   run "scaffold (chạy lại)"   "bash '$scaffold'"
   echo '- sửa tay' >> docs/PLANS.md
   run "scaffold (sau khi sửa tay)" "bash '$scaffold' | grep PLANS"
+
+  # Game Godot gọi REST Supabase, chưa có supabase/: pack bật theo nội dung, thiếu migration → sb_migrations; hook nhắc sau apply_migration.
+  sb="$tmp/.sbgame"; mkdir -p "$sb/net" && cd "$sb" || exit 1
+  git init -q && git config core.autocrlf false
+  printf 'config_version=5\n' > project.godot
+  printf 'extends Node\nconst URL := "https://x.supabase.co/rest/v1/scores"\n' > net/api.gd
+  git add -A && git -c user.name=t -c user.email=t@t commit -qm base
+  export CLAUDE_PROJECT_DIR="$sb"
+  mcp_input='{"session_id": "s1", "tool_name": "mcp__claude_ai_Supabase__apply_migration", "tool_input": {"project_id": "p", "name": "create_scores", "query": "create table scores (id int);"}}'
+  run "session_start (supabase theo nội dung)" "echo '{}' | bash '$hooks/session_start.sh'"
+  run "check (thiếu supabase/migrations)"      "bash '$check' net/api.gd"
+  run "post_migration (chưa có file → nhắc)"   "printf '%s' '$mcp_input' | bash '$hooks/post_migration.sh'"
+  mkdir -p supabase/migrations && echo 'create table scores (id int);' > supabase/migrations/20261106120000_create_scores.sql
+  run "post_migration (đã có file → im)"       "printf '%s' '$mcp_input' | bash '$hooks/post_migration.sh'"
+  run "check (có migration → qua)"             "bash '$check' net/api.gd"
 )
 mixed=$(cygpath -m "$tmp" 2>/dev/null || echo "$tmp")
 actual=$(printf '%s\n' "$actual" | sed -e "s|$mixed|<tmp>|g" -e "s|$tmp|<tmp>|g")

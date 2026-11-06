@@ -7,6 +7,7 @@ Một pack = luật máy + verify cho một stack. Engine (`../engine`) lo phầ
 | Khai báo | Bắt buộc | Ý nghĩa |
 |---|---|---|
 | `<name>_markers` | có | Glob tính từ root của pack, có một cái tồn tại → pack bật ở thư mục đó. `HARNESS_PACKS` trong `harness.env` ghi đè |
+| `<name>_detect()` | không | Marker theo nội dung, chỉ gọi khi không glob nào khớp (cwd = root repo). In ra các root, mỗi dòng một: `.` hoặc root app của pack đã detect trước (`$roots`, pack xếp theo tên). Giữ nhanh: chạy ở mọi hook |
 | `<name>_files` | có | Pathspec cho `git ls-files` khi quét toàn bộ (`check.sh` không tham số) |
 | `<name>_rules()` | có | Gọi cho **mọi** file được kiểm, kể cả file của pack khác → tự `case "$rel"` để lọc. Dùng `flag` hoặc ghi thẳng vào `$msgs` |
 | `<name>_generated` | không | Regex path file sinh ra: hook chặn sửa, engine bỏ qua |

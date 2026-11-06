@@ -1,5 +1,5 @@
 {
-  "description": "harness: nạp pack + plan dở đầu phiên, chặn sửa file generated (cả qua shell), hỏi trước lệnh git nguy hiểm, check.sh sau mỗi edit, check + docs-check + verify + test liên quan + gate evaluator trước khi dừng",
+  "description": "harness: nạp pack + plan dở đầu phiên, nhắc ghi file migration sau apply_migration (MCP Supabase), chặn sửa file generated (cả qua shell), hỏi trước lệnh git nguy hiểm, check.sh sau mỗi edit, check + docs-check + verify + test liên quan + gate evaluator trước khi dừng",
   "hooks": {
     "SessionStart": [
       {
@@ -38,6 +38,15 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post_edit.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*upabase.*__apply_migration",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post_migration.sh\""
           }
         ]
       }
