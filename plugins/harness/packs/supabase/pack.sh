@@ -1,10 +1,37 @@
 # Pack supabase — migration SQL, RLS, edge function. Không phụ thuộc app là Flutter hay web. Hợp đồng: ../README.md
-supabase_markers="supabase"
-supabase_files="supabase/*.sql supabase/functions/*.ts supabase/functions/*.js"
-supabase_skills='^supabase/=supabase-security-review
+supabase_markers="supabase supabase.example.cfg"
+supabase_files="supabase/*.sql supabase/config.toml supabase/functions/*.ts supabase/functions/*.js supabase.example.cfg .env.example"
+supabase_skills='^supabase/migrations/=supabase-migrations supabase-security-review
+^supabase/=supabase-security-review
 ^lib/.*_queries\.dart$=flutter-supabase-queries'
+# Dấu hiệu app gọi Supabase dù repo chưa có thư mục supabase/ (vd game Godot gọi REST thẳng).
+supabase_signal='SUPABASE_URL|/(rest|auth)/v1/|@supabase/supabase-js|supabase_flutter'
+
+# Không có supabase/: bật pack ở root app (của pack khác đã bật) sâu nhất chứa file có dấu hiệu, không có thì root repo.
+# .env* bị gitignore nên grep riêng.
+# shortcut: git grep chạy ở mỗi hook khi repo không có supabase/ — repo rất lớn thấy chậm thì cache theo HEAD.
+supabase_detect() {
+  local apps; apps=$(printf '%s' "$roots" | awk '$2 != "." { print $2 }' | sort -u)
+  { grep -lsE "$supabase_signal" .env* */.env* 2>/dev/null
+    git grep -lIE "$supabase_signal" -- . ':!*.md' 2>/dev/null; } \
+  | while IFS= read -r f; do
+      local best=. d
+      for d in $apps; do case "$f" in "$d"/*) { [ ${#d} -gt ${#best} ] || [ "$best" = . ]; } && best=$d ;; esac; done
+      echo "$best"
+    done | sort -u
+}
 
 supabase_rules() {
+  # Trạng thái repo, không theo dòng mới: dùng Supabase mà không có migration nào → schema chỉ nằm trên server. Báo 1 lần mỗi lần chạy.
+  case "$disabled $sb_migrations_seen" in *" sb_migrations "*|*seen) ;; *)
+    local proot=${rpath%"$rel"} hit=""
+    if ! compgen -G "${proot}supabase/migrations/*.sql" >/dev/null && ! compgen -G "supabase/migrations/*.sql" >/dev/null; then
+      case "$rel" in supabase/*) hit="(file trong supabase/)" ;; *) hit=$(grep -nE "$supabase_signal" "$file" | head -1) ;; esac
+    fi
+    [ -n "$hit" ] && { sb_migrations_seen=seen
+      msgs+="- [sb_migrations] Dùng Supabase nhưng repo không có \`${proot}supabase/migrations/*.sql\` → schema chỉ nằm trên server, không ai review được. Lấy danh sách bằng MCP \`list_migrations\` (hoặc \`supabase db pull\`), ghi mỗi migration ra \`supabase/migrations/<version>_<tên>.sql\` trùng version + đúng SQL đã áp. Xem skill \`supabase-migrations\`"$'\n'"$hit"$'\n'; } ;;
+  esac
+
   case "$rel" in
     supabase/*.sql)
       case "$disabled" in *" sb_view_invoker "*) ;; *)

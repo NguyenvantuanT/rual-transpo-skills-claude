@@ -27,7 +27,7 @@ for doc in "$@"; do
   [ -n "$missing" ] && msgs+="- [doc_stale_path] Đường dẫn không còn tồn tại → sửa doc theo code thật (hoặc xoá dòng):"$'\n'"$missing"$'\n'
 
   case "$rel" in CLAUDE.md|.claude/CLAUDE.md|AGENTS.md)
-    n=$(wc -l < "$doc")
+    n=$(($(wc -l < "$doc")))
     [ "$n" -gt "$max_entry" ] && msgs+="- [doc_entry_size] $n dòng > $max_entry → CLAUDE.md là mục lục: chuyển chi tiết sang docs/*.md, giữ lại 1 dòng trỏ tới" ;;
   esac
 

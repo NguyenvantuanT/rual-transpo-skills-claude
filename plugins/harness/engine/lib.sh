@@ -44,6 +44,8 @@ for p in "$harness_dir"/packs/*/pack.sh; do
         else compgen -G "$d/$m" >/dev/null && { found+=" $d"; break; }; fi
       done
     done
+    # Marker theo nội dung (vd code gọi API của stack): chỉ chạy khi glob không khớp.
+    [ -z "$found" ] && declare -F "${name}_detect" >/dev/null && found=$("${name}_detect")
   fi
   [ -n "$found" ] || continue
   packs+="$name "

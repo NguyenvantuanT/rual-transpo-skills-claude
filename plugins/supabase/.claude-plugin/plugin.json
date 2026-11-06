@@ -1,6 +1,6 @@
 {
   "name": "supabase",
-  "version": "1.0.0",
-  "description": "Supabase: supabase-security-review. Rule máy sb_* nằm trong pack supabase của plugin harness",
+  "version": "1.1.0",
+  "description": "Supabase: supabase-migrations (schema trong repo là nguồn sự thật), supabase-security-review. Rule máy sb_* + hook nhắc sau apply_migration nằm trong plugin harness",
   "author": { "name": "tuannv1" }
 }

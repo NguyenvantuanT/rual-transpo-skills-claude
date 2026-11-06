@@ -51,6 +51,10 @@ jobs:
         env:
           SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
 
+      # --- pack supabase (xoá nếu không dùng). Monorepo: đổi path theo app ---
+      - name: Supabase — schema nằm trong repo
+        run: ls supabase/migrations/*.sql >/dev/null 2>&1 || { echo "::error::Không có supabase/migrations/*.sql — schema chỉ nằm trên server. Xem skill supabase-migrations"; exit 1; }
+
       # --- pack python (xoá nếu không dùng) ---
       # - uses: actions/setup-python@v5
       #   with: { python-version: '3.12' }

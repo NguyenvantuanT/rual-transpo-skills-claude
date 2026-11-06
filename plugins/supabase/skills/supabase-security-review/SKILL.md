@@ -15,6 +15,7 @@ Phỏng theo `supabase-security-review` của BOW Skills (MIT) — xem `THIRD_PA
 | `sb_cors_wildcard` | Edge function trả `Access-Control-Allow-Origin: *` | Giới hạn origin cụ thể (bắt buộc với endpoint admin/mutation) |
 | `sb_secret` | Hard-code Stripe live key, service-role JWT, OpenAI/Anthropic key | Đưa vào secret của Supabase / CI, đọc qua env |
 | `sb_check_uid_only` | `WITH CHECK (auth.uid() = user_id)` mà không kiểm tra FK liên quan | Kiểm tra quyền sở hữu mọi FK; thật sự N/A thì thêm `-- security: fk-not-applicable` cùng dòng |
+| `sb_migrations` | Dùng Supabase (có `supabase/`, `SUPABASE_URL`, code gọi `/rest/v1/`…) mà repo không có `supabase/migrations/*.sql` | Skill `supabase-migrations` |
 | `squawk` (Stop hook, nếu máy có cài [squawk](https://github.com/sbdchd/squawk)) | Migration khoá bảng lâu, đổi kiểu cột, thêm `NOT NULL` không default… | Theo gợi ý của squawk (chia migration, `CONCURRENTLY`, backfill trước) |
 
 Chạy tay toàn bộ: `bash <plugin harness>/engine/check.sh $(git ls-files 'supabase/*')`.
@@ -22,13 +23,21 @@ Chạy tay toàn bộ: `bash <plugin harness>/engine/check.sh $(git ls-files 'su
 ## 2. Checklist tay (máy không thấy)
 
 **RLS**
+- RLS bật (`alter table … enable row level security`) trên **mọi** bảng ở schema `public`, kể cả bảng chỉ đọc.
+- Policy có `to authenticated` (hoặc `to anon` có chủ đích) + điều kiện sở hữu `(select auth.uid()) = user_id`; `to authenticated` một mình là chưa phân quyền.
+- UPDATE có cả `using` và `with check`.
+- `revoke all on <bảng> from anon` khi khách không cần đọc.
 - INSERT/UPDATE `WITH CHECK` xác minh quyền sở hữu của **mọi** FK, không chỉ `user_id`.
 - Tiền / giảm giá không lấy từ client — ép server-side hoặc `CHECK` constraint.
 - Không nới rộng phạm vi SELECT ngoài ý muốn; policy đọc của owner vẫn giữ.
 
-**Trigger**
+**Trigger / function**
+- Function trigger: `security invoker` + `set search_path = ''` (gọi object kèm schema: `public.x`) + `revoke execute on function … from public, anon, authenticated`.
 - `SECURITY DEFINER` → đi kèm INSERT policy chặt trên bảng đó.
 - Trigger đếm đối xứng: tăng khi INSERT, giảm khi DELETE/UPDATE, tính cả `ON DELETE CASCADE`.
+
+**Key**
+- Client (app, game, web) chỉ dùng publishable key (hoặc anon key cũ). Không bao giờ service_role / secret key ở client hay trong repo.
 
 **Edge function**
 - Side-effect sau mutation (log, notification) bọc `try/catch` để lỗi phụ không phá giao dịch chính.
