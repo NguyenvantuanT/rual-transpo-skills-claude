@@ -43,6 +43,32 @@
       "description": "Phần ghép Flutter + Supabase: query class theo domain, select tường minh, RPC, realtime"
     },
     {
+      "name": "supabase-official",
+      "source": {
+        "source": "github",
+        "repo": "supabase/agent-skills",
+        "sha": "c9be0e931b7930f7d02126d04774d904c381e7d7"
+      },
+      "strict": false,
+      "skills": ["./skills/supabase"],
+      "description": "Skill chính chủ của Supabase (MIT): Database, Auth, RLS, Edge Functions, Storage, Realtime, migration, CLI, debug lỗi; kèm MCP docs của Supabase. Dùng khi viết code/migration Supabase",
+      "license": "MIT",
+      "homepage": "https://github.com/supabase/agent-skills"
+    },
+    {
+      "name": "postgres-best-practices",
+      "source": {
+        "source": "github",
+        "repo": "supabase/agent-skills",
+        "sha": "c9be0e931b7930f7d02126d04774d904c381e7d7"
+      },
+      "strict": false,
+      "skills": ["./skills/supabase-postgres-best-practices"],
+      "description": "Postgres best practices của Supabase (MIT): index, schema, khoá, connection pooling, phân trang, RLS hiệu năng. Dùng khi viết query, thiết kế schema",
+      "license": "MIT",
+      "homepage": "https://github.com/supabase/agent-skills"
+    },
+    {
       "name": "godot-development",
       "source": {
         "source": "git-subdir",
