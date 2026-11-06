@@ -29,6 +29,8 @@ Marketplace chỉ trỏ tới repo gốc, khoá theo commit `sha`. Muốn lấy 
 | `unity-development` | Game Unity | như trên · MIT | Skill `unity-development`, agent `unity-engineer` |
 | `game-architecture` | Mọi game | như trên · MIT | Skill `game-arch-patterns`, agent `game-architect` |
 | `unity-skills` | Game Unity | [Unity-Technologies/skills](https://github.com/Unity-Technologies/skills) · Unity Companion License (chỉ dùng cho dự án Unity) | 35 skill chính chủ: UI Toolkit/uGUI, URP, sprite, physics, multiplayer, IAP, localization... |
+| `supabase-official` | Có Supabase (viết code, migration, RLS, auth) | [supabase/agent-skills](https://github.com/supabase/agent-skills) · MIT | Skill `supabase` chính chủ + MCP docs (`mcp.supabase.com`, chỉ đọc docs) |
+| `postgres-best-practices` | Có Postgres/Supabase | như trên · MIT | Skill `supabase-postgres-best-practices`: ~30 rule index, schema, khoá, pooling, phân trang |
 | `godot-mcp` | Godot, muốn agent tự chạy game và đọc lỗi | [Coding-Solo/godot-mcp](https://github.com/Coding-Solo/godot-mcp) · MIT | MCP server `godot` (`npx @coding-solo/godot-mcp`). Cần Node.js, Godot 4 trong PATH hoặc biến `GODOT_PATH` |
 | `godot-skills-full` | Cần tra sâu Godot/Bevy (tắt sẵn) | [thedivergentai/Game-Dev-Agentic-Skills](https://github.com/thedivergentai/Game-Dev-Agentic-Skills) · LGPL-3.0 | 184 skill Godot + Bevy, tốn context |
 | `game-studio` | Muốn quy trình studio đầy đủ (tắt sẵn) | [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) · MIT | 74 skill + 49 agent theo vai trò (director, designer, specialist Godot/Unity/Unreal) |
@@ -95,7 +97,9 @@ Hooks chỉ chạy ở repo đã init (có `.claude/harness.env`) hoặc có pac
 /plugin install web@vtinter-harness                # web Next.js
 /plugin install nestjs@vtinter-harness             # BE NestJS
 /plugin install flutter@vtinter-harness            # app Flutter
-/plugin install supabase@vtinter-harness           # có Supabase
+/plugin install supabase@vtinter-harness           # có Supabase (review)
+/plugin install supabase-official@vtinter-harness  # có Supabase (viết code, migration)
+/plugin install postgres-best-practices@vtinter-harness
 /plugin install flutter-supabase@vtinter-harness   # Flutter + Supabase
 /plugin install godot-development@vtinter-harness  # game Godot (+ godot-mcp, game-architecture)
 /plugin install unity-development@vtinter-harness  # game Unity (+ unity-skills, game-architecture)
@@ -108,7 +112,7 @@ Cài theo loại repo:
 | Web Next.js | `harness` `core` `web` |
 | BE NestJS | `harness` `core` `nestjs` |
 | Monorepo web + BE | `harness` `core` `web` `nestjs` |
-| App Flutter | `harness` `core` `flutter` (+ `supabase` `flutter-supabase` nếu dùng Supabase) |
+| App Flutter | `harness` `core` `flutter` (+ `supabase` `supabase-official` `postgres-best-practices` `flutter-supabase` nếu dùng Supabase) |
 | Game Godot | `harness` `core` `godot-development` `game-architecture` `godot-mcp` |
 | Game Unity | `harness` `core` `unity-development` `unity-skills` `game-architecture` |
 | Python / Go | `harness` `core` (chưa có plugin tri thức riêng) |
