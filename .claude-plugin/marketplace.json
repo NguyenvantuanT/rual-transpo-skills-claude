@@ -69,6 +69,59 @@
       "homepage": "https://github.com/supabase/agent-skills"
     },
     {
+      "name": "kotlin-official",
+      "source": {
+        "source": "github",
+        "repo": "Kotlin/kotlin-agent-skills",
+        "sha": "087f5689c1934135ed58718cdf524525e452b7e9"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/kotlin-backend-jpa-entity-mapping",
+        "./skills/kotlin-tooling-agp9-migration",
+        "./skills/kotlin-tooling-cocoapods-spm-migration",
+        "./skills/kotlin-tooling-gradle-to-kotlin-toolchain-plugin",
+        "./skills/kotlin-tooling-gradle-to-kotlin-toolchain-project",
+        "./skills/kotlin-tooling-immutable-collections-0-5-x-migration",
+        "./skills/kotlin-tooling-java-to-kotlin",
+        "./skills/kotlin-tooling-kotlin-toolchain-plugin-authoring",
+        "./skills/kotlin-tooling-kotlin-toolchain",
+        "./skills/kotlin-tooling-native-build-performance"
+      ],
+      "mcpServers": {
+        "kotlinlang": {
+          "type": "http",
+          "url": "https://mcp.kotlinlang.org/mcp"
+        }
+      },
+      "description": "Skill chính chủ JetBrains (Apache-2.0): Java→Kotlin, AGP 9, Gradle Kotlin toolchain, JPA entity, CocoaPods→SPM, build Kotlin/Native; kèm MCP docs kotlinlang.org. Dùng khi migrate hoặc sửa build",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/Kotlin/kotlin-agent-skills"
+    },
+    {
+      "name": "kotlin-compose",
+      "source": {
+        "source": "github",
+        "repo": "chrisbanes/skills",
+        "sha": "50b5d4cf0d14a92777e9dd05c8439c48f6cebf94"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/kotlin-api-design",
+        "./skills/kotlin-concurrency-and-flow",
+        "./skills/kotlin-control-flow",
+        "./skills/compose-state-and-effects",
+        "./skills/compose-component-design",
+        "./skills/compose-performance",
+        "./skills/compose-animations",
+        "./skills/compose-focus-navigation",
+        "./skills/compose-ui-testing-patterns"
+      ],
+      "description": "Skill Kotlin + Jetpack Compose của Chris Banes (Apache-2.0): API design, coroutine/Flow, control flow, state/effect, component, hiệu năng, animation, focus, UI test. Chỉ lấy skill Kotlin/Compose, bỏ skill workflow riêng của tác giả",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/chrisbanes/skills"
+    },
+    {
       "name": "godot-development",
       "source": {
         "source": "git-subdir",
