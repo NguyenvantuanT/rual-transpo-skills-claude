@@ -69,6 +69,121 @@
       "homepage": "https://github.com/supabase/agent-skills"
     },
     {
+      "name": "kotlin-official",
+      "source": {
+        "source": "github",
+        "repo": "Kotlin/kotlin-agent-skills",
+        "sha": "087f5689c1934135ed58718cdf524525e452b7e9"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/kotlin-backend-jpa-entity-mapping",
+        "./skills/kotlin-tooling-agp9-migration",
+        "./skills/kotlin-tooling-cocoapods-spm-migration",
+        "./skills/kotlin-tooling-gradle-to-kotlin-toolchain-plugin",
+        "./skills/kotlin-tooling-gradle-to-kotlin-toolchain-project",
+        "./skills/kotlin-tooling-immutable-collections-0-5-x-migration",
+        "./skills/kotlin-tooling-java-to-kotlin",
+        "./skills/kotlin-tooling-kotlin-toolchain-plugin-authoring",
+        "./skills/kotlin-tooling-kotlin-toolchain",
+        "./skills/kotlin-tooling-native-build-performance"
+      ],
+      "mcpServers": {
+        "kotlinlang": {
+          "type": "http",
+          "url": "https://mcp.kotlinlang.org/mcp"
+        }
+      },
+      "description": "Skill chính chủ JetBrains (Apache-2.0): Java→Kotlin, AGP 9, Gradle Kotlin toolchain, JPA entity, CocoaPods→SPM, build Kotlin/Native; kèm MCP docs kotlinlang.org. Dùng khi migrate hoặc sửa build",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/Kotlin/kotlin-agent-skills"
+    },
+    {
+      "name": "kotlin-compose",
+      "source": {
+        "source": "github",
+        "repo": "chrisbanes/skills",
+        "sha": "50b5d4cf0d14a92777e9dd05c8439c48f6cebf94"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/kotlin-api-design",
+        "./skills/kotlin-concurrency-and-flow",
+        "./skills/kotlin-control-flow",
+        "./skills/compose-state-and-effects",
+        "./skills/compose-component-design",
+        "./skills/compose-performance",
+        "./skills/compose-animations",
+        "./skills/compose-focus-navigation",
+        "./skills/compose-ui-testing-patterns"
+      ],
+      "description": "Skill Kotlin + Jetpack Compose của Chris Banes (Apache-2.0): API design, coroutine/Flow, control flow, state/effect, component, hiệu năng, animation, focus, UI test. Chỉ lấy skill Kotlin/Compose, bỏ skill workflow riêng của tác giả",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/chrisbanes/skills"
+    },
+    {
+      "name": "docker-official",
+      "source": {
+        "source": "github",
+        "repo": "docker/skills",
+        "sha": "caeee2024f7527d890a29dd1732b62a112f56d0e"
+      },
+      "description": "Skill chính chủ Docker Inc. (Apache-2.0): Dockerize project, Dockerfile multi-stage, Compose, chặn lệnh xoá nguy hiểm, Docker Sandboxes/Agent; kèm MCP tra docs Docker",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/docker/skills"
+    },
+    {
+      "name": "cpp",
+      "source": {
+        "source": "github",
+        "repo": "Jeffallan/claude-skills",
+        "sha": "67c1961b180dc92cf08983344627109e983e8f51"
+      },
+      "strict": false,
+      "skills": ["./skills/cpp-pro"],
+      "description": "Skill cpp-pro của Jeffallan (MIT): C++20/23, RAII, smart pointer, template/concept, move semantics, concurrency, CMake/sanitizer, tối ưu hiệu năng",
+      "license": "MIT",
+      "homepage": "https://github.com/Jeffallan/claude-skills"
+    },
+    {
+      "name": "cpp-review",
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/ecc",
+        "sha": "4adeee6732a12d1540f49a4d50a38ce8c97f9a53"
+      },
+      "strict": false,
+      "skills": ["./skills/cpp-testing"],
+      "agents": ["./agents/cpp-reviewer.md", "./agents/cpp-build-resolver.md"],
+      "description": "Phần C++ của ECC (MIT): agent cpp-reviewer (memory safety, idiom, concurrency), agent cpp-build-resolver (sửa lỗi CMake/compile/link), skill cpp-testing (GoogleTest, CTest, sanitizer)",
+      "license": "MIT",
+      "homepage": "https://github.com/affaan-m/ecc"
+    },
+    {
+      "name": "meta-vr",
+      "source": {
+        "source": "github",
+        "repo": "meta-quest/agentic-tools",
+        "sha": "3a8553d10a5a1bd1bf9beaaa950243fbbed3b9ea"
+      },
+      "description": "Skill chính chủ Meta (Apache-2.0) cho Quest/Horizon OS: mixed reality, passthrough camera, MRUK, Interaction SDK, Spatial SDK, WebXR (IWSDK), debug hiệu năng, nộp store; kèm MCP metavr (npx, cần Node.js)",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/meta-quest/agentic-tools"
+    },
+    {
+      "name": "unity-xr",
+      "source": {
+        "source": "github",
+        "repo": "nice-wolf-studio/unity-claude-skills",
+        "sha": "a149d3e995420432f52b0899092daa4b069f441f"
+      },
+      "strict": false,
+      "skills": ["./skills/unity-xr"],
+      "description": "Skill unity-xr của nice-wolf-studio (MIT): Unity 6 XR Interaction Toolkit, OpenXR, AR Foundation (plane, anchor, image tracking), hand tracking, Quest + Vision Pro",
+      "license": "MIT",
+      "homepage": "https://github.com/nice-wolf-studio/unity-claude-skills"
+    },
+    {
       "name": "godot-development",
       "source": {
         "source": "git-subdir",

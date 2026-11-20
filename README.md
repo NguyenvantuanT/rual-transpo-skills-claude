@@ -19,7 +19,7 @@ Repo chia làm hai lớp:
 | `supabase` | Có Supabase | `supabase-migrations` (schema trong repo là nguồn sự thật), `supabase-security-review` |
 | `flutter-supabase` | Flutter + Supabase | `flutter-supabase-queries` |
 
-### Plugin game (lấy thẳng từ upstream, không chép)
+### Plugin lấy thẳng từ upstream (game, Supabase, Kotlin, Docker, C++, AR; không chép)
 
 Marketplace chỉ trỏ tới repo gốc, khoá theo commit `sha`. Muốn lấy bản mới thì đổi `sha` trong `marketplace.json`. Nội dung và license thuộc tác giả gốc.
 
@@ -31,6 +31,13 @@ Marketplace chỉ trỏ tới repo gốc, khoá theo commit `sha`. Muốn lấy 
 | `unity-skills` | Game Unity | [Unity-Technologies/skills](https://github.com/Unity-Technologies/skills) · Unity Companion License (chỉ dùng cho dự án Unity) | 35 skill chính chủ: UI Toolkit/uGUI, URP, sprite, physics, multiplayer, IAP, localization... |
 | `supabase-official` | Có Supabase (viết code, migration, RLS, auth) | [supabase/agent-skills](https://github.com/supabase/agent-skills) · MIT | Skill `supabase` chính chủ + MCP docs (`mcp.supabase.com`, chỉ đọc docs) |
 | `postgres-best-practices` | Có Postgres/Supabase | như trên · MIT | Skill `supabase-postgres-best-practices`: ~30 rule index, schema, khoá, pooling, phân trang |
+| `kotlin-official` | Dự án Kotlin (migrate Java→Kotlin, AGP 9, Gradle, KMP) | [Kotlin/kotlin-agent-skills](https://github.com/Kotlin/kotlin-agent-skills) · Apache-2.0 | 10 skill chính chủ JetBrains + MCP docs `kotlinlang` (`mcp.kotlinlang.org`) |
+| `kotlin-compose` | Code Kotlin hằng ngày, Android/Compose | [chrisbanes/skills](https://github.com/chrisbanes/skills) · Apache-2.0 | 9 skill: `kotlin-api-design`, `kotlin-concurrency-and-flow`, `kotlin-control-flow`, `compose-*` (state, component, hiệu năng, animation, focus, UI test) |
+| `docker-official` | Có Dockerfile/Compose | [docker/skills](https://github.com/docker/skills) · Apache-2.0 | 11 skill chính chủ Docker (Dockerize, multi-stage build, Compose, chặn lệnh xoá nguy hiểm, Sandboxes) + MCP docs Docker |
+| `cpp` | Dự án C++ | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) · MIT | Skill `cpp-pro`: C++20/23, RAII, template, concurrency, CMake, hiệu năng |
+| `cpp-review` | Dự án C++ | [affaan-m/ecc](https://github.com/affaan-m/ecc) · MIT | Agent `cpp-reviewer`, `cpp-build-resolver`, skill `cpp-testing` |
+| `meta-vr` | AR/MR/VR trên Meta Quest, WebXR | [meta-quest/agentic-tools](https://github.com/meta-quest/agentic-tools) · Apache-2.0 | 36 skill chính chủ Meta (passthrough, MRUK, Interaction SDK, Spatial SDK, IWSDK WebXR, debug, store) + MCP `metavr` (`npx metavr`, cần Node.js) |
+| `unity-xr` | AR/VR bằng Unity | [nice-wolf-studio/unity-claude-skills](https://github.com/nice-wolf-studio/unity-claude-skills) · MIT | Skill `unity-xr`: XR Interaction Toolkit, OpenXR, AR Foundation (plane, anchor, image tracking) |
 | `godot-mcp` | Godot, muốn agent tự chạy game và đọc lỗi | [Coding-Solo/godot-mcp](https://github.com/Coding-Solo/godot-mcp) · MIT | MCP server `godot` (`npx @coding-solo/godot-mcp`). Cần Node.js, Godot 4 trong PATH hoặc biến `GODOT_PATH` |
 | `godot-skills-full` | Cần tra sâu Godot/Bevy (tắt sẵn) | [thedivergentai/Game-Dev-Agentic-Skills](https://github.com/thedivergentai/Game-Dev-Agentic-Skills) · LGPL-3.0 | 184 skill Godot + Bevy, tốn context |
 | `game-studio` | Muốn quy trình studio đầy đủ (tắt sẵn) | [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) · MIT | 74 skill + 49 agent theo vai trò (director, designer, specialist Godot/Unity/Unreal) |
@@ -65,7 +72,7 @@ Một stack đầy đủ gồm 2 phần, không phải sửa engine:
 2. **Plugin tri thức** (skill + agent): `plugins/<stack>/` gồm `.claude-plugin/plugin.json`, `skills/<tên>/SKILL.md` (40–70 dòng: rule + checklist, chi tiết để ở `references/`), `agents/<stack>-dev.md` (bản đồ + quy trình + khi nào dừng hỏi). Mẫu: `plugins/web`, `plugins/nestjs`, `plugins/flutter`.
 3. Nối 2 phần: `<name>_skills` trong `pack.sh` và bảng trong `map.md` trỏ đúng tên skill. Thêm plugin vào `.claude-plugin/marketplace.json` và bảng Plugin ở trên.
 
-Hiện tại `python`, `go` mới có pack, chưa có plugin tri thức. `godot`, `unity` dùng plugin game lấy từ upstream (xem bảng Plugin game).
+Hiện tại `python`, `go` mới có pack, chưa có plugin tri thức. `godot`, `unity` dùng plugin game lấy từ upstream, `kotlin` dùng `kotlin-official` + `kotlin-compose` (xem bảng Plugin lấy thẳng từ upstream).
 
 Stack đã có người làm sẵn skill tốt thì đừng viết lại: thêm entry `github` hoặc `git-subdir` có `sha` vào `marketplace.json`, như các plugin game.
 
@@ -101,6 +108,10 @@ Hooks chỉ chạy ở repo đã init (có `.claude/harness.env`) hoặc có pac
 /plugin install supabase-official@vtinter-harness  # có Supabase (viết code, migration)
 /plugin install postgres-best-practices@vtinter-harness
 /plugin install flutter-supabase@vtinter-harness   # Flutter + Supabase
+/plugin install kotlin-official@vtinter-harness    # Kotlin (+ kotlin-compose nếu Android/Compose)
+/plugin install docker-official@vtinter-harness    # có Docker
+/plugin install cpp@vtinter-harness                # C++ (+ cpp-review)
+/plugin install meta-vr@vtinter-harness            # AR/MR Meta Quest, WebXR (+ unity-xr nếu Unity)
 /plugin install godot-development@vtinter-harness  # game Godot (+ godot-mcp, game-architecture)
 /plugin install unity-development@vtinter-harness  # game Unity (+ unity-skills, game-architecture)
 ```
@@ -115,6 +126,10 @@ Cài theo loại repo:
 | App Flutter | `harness` `core` `flutter` (+ `supabase` `supabase-official` `postgres-best-practices` `flutter-supabase` nếu dùng Supabase) |
 | Game Godot | `harness` `core` `godot-development` `game-architecture` `godot-mcp` |
 | Game Unity | `harness` `core` `unity-development` `unity-skills` `game-architecture` |
+| Kotlin / Android | `harness` `core` `kotlin-official` `kotlin-compose` |
+| C++ | `harness` `core` `cpp` `cpp-review` |
+| AR/MR (Unity, Quest, WebXR) | `harness` `core` `unity-xr` `meta-vr` (+ `unity-development` `unity-skills` nếu Unity) |
+| Có Docker | thêm `docker-official` |
 | Python / Go | `harness` `core` (chưa có plugin tri thức riêng) |
 
 Rồi nhờ Claude: **"init harness cho repo này"** (skill `harness-init`). Skill chạy `scaffold.sh` để tạo `AGENTS.md` (có bản đồ theo stack), `CLAUDE.md`, `ARCHITECTURE.md`, `docs/`, `.claude/harness.env`, `.github/workflows/harness.yml` và `.claude/harness.lock`, điền thông tin dự án, rồi chạy baseline.
